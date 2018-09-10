@@ -1,0 +1,13 @@
+name: ${pluginName}
+rundeckPluginVersion: 1.2
+author: Rundeck Dev
+date: ${currentDate}
+version: 1.0.0
+providers:
+    - name: ${sanitizedPluginName}
+      service: ${providedService}
+      title: ${pluginName}
+      description: The description of your plugin
+      plugin-type: script
+      script-interpreter: /bin/bash
+      script-file: exec

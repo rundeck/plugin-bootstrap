@@ -1,0 +1,6 @@
+.gradle/
+.idea/
+out/
+rundeck-plugin-bootstrap/
+build/
+*.iml
