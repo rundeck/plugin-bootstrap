@@ -1,5 +1,7 @@
 # Rundeck Plugin Bootstrap
 
+[![Build Status](https://travis-ci.org/sjrd218/rundeck-plugin-bootstrap.svg?branch=master)](https://travis-ci.org/sjrd218/rundeck-plugin-bootstrap)
+
 Bootstrap your Rundeck plugin development with this easy command line utility. 
 
 Download the tar or zip distribution, cd to the bin directory, and run:
