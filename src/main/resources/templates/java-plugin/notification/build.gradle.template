@@ -4,7 +4,7 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'idea'
 sourceCompatibility = 1.8
-ext.rundeckPluginVersion= '1.2'
+ext.rundeckPluginVersion= '2.0'
 ext.rundeckVersion= '${rundeckVersion}'
 
 
@@ -27,6 +27,8 @@ jar {
         attributes 'Rundeck-Plugin-Classnames': pluginClassNames
         attributes 'Rundeck-Plugin-File-Version': version
         attributes 'Rundeck-Plugin-Name': '${pluginName}'
+        attributes 'Rundeck-Plugin-Rundeck-Compatibility-Version': '3.x'
+        attributes 'Rundeck-Plugin-Tags': 'java,notification'
         attributes 'Rundeck-Plugin-Version': rundeckPluginVersion, 'Rundeck-Plugin-Archive': 'true'
     }
     from("rundeck-verb-artifact.yaml") {
