@@ -17,6 +17,8 @@ package com.rundeck.plugin.generator
 
 import com.rundeck.plugin.utils.GeneratorUtils
 
+import java.time.Instant
+
 
 class ScriptPluginTemplateGenerator extends AbstractTemplateGenerator {
     private static final String TEMPLATE_BASE = "templates/script-plugin/"
@@ -30,7 +32,7 @@ class ScriptPluginTemplateGenerator extends AbstractTemplateGenerator {
         templateProperties["pluginName"] = pluginName
         templateProperties["sanitizedPluginName"] = GeneratorUtils.sanitizedPluginName(pluginName)
         templateProperties["providedService"] = providedService
-        templateProperties["currentDate"] = new Date().format("MM/dd/yyyy")
+        templateProperties["currentDate"] = Instant.now().toString()
         templateProperties["pluginLang"] = "script"
         return templateProperties
     }

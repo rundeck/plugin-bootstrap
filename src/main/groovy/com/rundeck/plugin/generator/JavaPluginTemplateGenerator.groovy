@@ -18,6 +18,8 @@ package com.rundeck.plugin.generator
 import com.rundeck.plugin.utils.GeneratorUtils
 import org.apache.commons.text.WordUtils
 
+import java.time.Instant
+
 class JavaPluginTemplateGenerator extends AbstractTemplateGenerator {
     private static final String TEMPLATE_BASE = "templates/java-plugin/"
     private static final String JAVA_STRUCTURE = "java-plugin.structure"
@@ -29,7 +31,7 @@ class JavaPluginTemplateGenerator extends AbstractTemplateGenerator {
         templateProperties["sanitizedPluginName"] = GeneratorUtils.sanitizedPluginName(pluginName)
         templateProperties["javaPluginClass"] = validJavaPluginClassFromName(pluginName)
         templateProperties["providedService"] = providedService
-        templateProperties["currentDate"] = new Date().format("MM/dd/yyyy")
+        templateProperties["currentDate"] = Instant.now().toString()
         templateProperties["pluginLang"] = "java"
         templateProperties["rundeckVersion"] = "3.0.x"
         return templateProperties
