@@ -27,6 +27,7 @@ jar {
         attributes 'Rundeck-Plugin-Classnames': pluginClassNames
         attributes 'Rundeck-Plugin-File-Version': version
         attributes 'Rundeck-Plugin-Name': '${pluginName}'
+        attributes 'Rundeck-Plugin-Description': 'Provide a short description of your plugin here.'
         attributes 'Rundeck-Plugin-Rundeck-Compatibility-Version': '3.x'
         attributes 'Rundeck-Plugin-Tags': 'java,notification'
         attributes 'Rundeck-Plugin-Version': rundeckPluginVersion, 'Rundeck-Plugin-Archive': 'true'
