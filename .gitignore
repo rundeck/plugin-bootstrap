@@ -4,3 +4,4 @@ out/
 rundeck-plugin-bootstrap/
 build/
 *.iml
+.DS_Store

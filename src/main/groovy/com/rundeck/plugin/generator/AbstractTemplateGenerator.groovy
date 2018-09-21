@@ -18,6 +18,9 @@ package com.rundeck.plugin.generator
 import com.rundeck.plugin.utils.GeneratorUtils
 import groovy.text.GStringTemplateEngine
 
+import java.nio.file.Files
+import java.nio.file.Paths
+
 
 abstract class AbstractTemplateGenerator implements PluginTypeTemplateGenerator {
 
@@ -64,10 +67,10 @@ abstract class AbstractTemplateGenerator implements PluginTypeTemplateGenerator 
             FileWriter fileOut = new FileWriter(destFile)
             if(template.toString().endsWith(".template")) {
                 engine.createTemplate(template).make(templateProperties).writeTo(fileOut)
+                fileOut.flush()
             } else {
-                fileOut << template.openStream()
+                destFile << template.openStream()
             }
-            fileOut.flush()
         }
         return "Plugin generated at: ${destDir.absolutePath}"
     }
