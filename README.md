@@ -6,7 +6,7 @@ Bootstrap your Rundeck plugin development with this easy command line utility.
 
 Download the tar or zip distribution, cd to the bin directory, and run:
 
-./rundeck-plugin-bootstrap -n MyRundeckPlugin -t java -s Notificaton /tmp
+./rundeck-plugin-bootstrap -n MyRundeckPlugin -t java -s Notification -d /tmp
 
 A Java notification plugin will be created at /tmp/myrundeckplugin. You can cd into that directory,
 run `gradle build` and you will have an installable notification plugin that you can put in your Rundeck installation.

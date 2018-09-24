@@ -24,6 +24,8 @@ class JavaPluginTemplateGenerator extends AbstractTemplateGenerator {
     private static final String TEMPLATE_BASE = "templates/java-plugin/"
     private static final String JAVA_STRUCTURE = "java-plugin.structure"
 
+    private static final List ALLOWED_TEMPLATES = ["ResourceModel","Notification"]
+
     @Override
     Map makeTemplateProperties(final String pluginName, final String providedService) {
         Map templateProperties = new HashMap()
@@ -49,7 +51,7 @@ class JavaPluginTemplateGenerator extends AbstractTemplateGenerator {
 
     @Override
     void preTemplateValidations(String providedService) {
-        if(providedService != "Notification") throw new Exception("Only Notification plugin generation is supported at this time")
+        if(!ALLOWED_TEMPLATES.contains(providedService))throw new Exception("Only "+ALLOWED_TEMPLATES.toString()+" plugins generation are supported at this time")
     }
 
     @Override
