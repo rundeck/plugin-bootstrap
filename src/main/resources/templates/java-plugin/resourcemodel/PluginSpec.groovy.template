@@ -2,7 +2,7 @@ package com.plugin.${javaPluginClass.toLowerCase()}
 
 import spock.lang.Specification
 
-class ${javaPluginClass}Spec extends Specification {
+class ${javaPluginClass}FactorySpec extends Specification {
 
     def "retrieve resource success"(){
         given:

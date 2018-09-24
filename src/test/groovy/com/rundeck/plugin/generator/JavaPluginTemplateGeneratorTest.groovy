@@ -49,7 +49,7 @@ class JavaPluginTemplateGeneratorTest extends Specification {
         new File(tmpDir,"/my-resourcemodel-plugin/src/main/resources/resources/icon.png").exists()
         new File(tmpDir,"/my-resourcemodel-plugin/README.md").exists()
         new File(tmpDir,"/my-resourcemodel-plugin/src/main/java/com/plugin/myresourcemodelplugin/MyResourcemodelPluginFactory.java").exists()
-        new File(tmpDir,"/my-resourcemodel-plugin/src/test/groovy/com/plugin/myresourcemodelplugin/MyresourcemodelpluginSpec.groovy").exists()
+        new File(tmpDir,"/my-resourcemodel-plugin/src/test/groovy/com/plugin/myresourcemodelplugin/MyResourcemodelPluginFactorySpec.groovy").exists()
 
     }
 
