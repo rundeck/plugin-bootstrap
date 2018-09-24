@@ -28,10 +28,28 @@ class JavaPluginTemplateGeneratorTest extends Specification {
         then:
         compileResult == 0
         new File(tmpDir,"/my-great-plugin/build.gradle").exists()
-        new File(tmpDir,"/my-great-plugin/icon.png").exists()
+        new File(tmpDir,"/my-great-plugin/src/main/resources/resources/icon.png").exists()
         new File(tmpDir,"/my-great-plugin/README.md").exists()
         new File(tmpDir,"/my-great-plugin/src/main/java/com/plugin/mygreatplugin/MyGreatPlugin.java").exists()
         new File(tmpDir,"/my-great-plugin/src/test/groovy/com/plugin/mygreatplugin/MyGreatPluginSpec.groovy").exists()
+
+    }
+
+
+    def "Create ResourceModel Template"() {
+        when:
+        File tmpDir = File.createTempDir()
+        JavaPluginTemplateGenerator generator = new JavaPluginTemplateGenerator()
+        generator.createTemplate("My ResourceModel Plugin","ResourceModel",tmpDir.absolutePath)
+        int compileResult = TestUtils.buildGradle(new File(tmpDir,"my-resourcemodel-plugin"))
+
+        then:
+        compileResult == 0
+        new File(tmpDir,"/my-resourcemodel-plugin/build.gradle").exists()
+        new File(tmpDir,"/my-resourcemodel-plugin/src/main/resources/resources/icon.png").exists()
+        new File(tmpDir,"/my-resourcemodel-plugin/README.md").exists()
+        new File(tmpDir,"/my-resourcemodel-plugin/src/main/java/com/plugin/myresourcemodelplugin/MyResourcemodelPluginFactory.java").exists()
+        new File(tmpDir,"/my-resourcemodel-plugin/src/test/groovy/com/plugin/myresourcemodelplugin/MyresourcemodelpluginSpec.groovy").exists()
 
     }
 
