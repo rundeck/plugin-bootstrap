@@ -23,22 +23,29 @@ public class ${javaPluginClass}Factory implements ResourceModelSourceFactory, De
     public static final String PROVIDER_TITLE = "Test / Resource Model";
     public static final String PROVIDER_DESCRIPTION ="Test Resource Model ";
 
-    static Description DESCRIPTION = DescriptionBuilder.builder()
-            .name(PROVIDER_NAME)
-            .title(PROVIDER_TITLE)
-            .description(PROVIDER_DESCRIPTION)
-            .property(
-                    PropertyUtil.string("tags", "Custom Tags example", "Custom Tags.", false,
-                                null,null,null, null
-                    )
-                )
-            .build();
 
+   /**
+     * Overriding this method gives the plugin a chance to take part in building the {@link
+     * com.dtolabs.rundeck.core.plugins.configuration.Description} presented by this plugin.  This subclass can use the
+     * {@link DescriptionBuilder} to modify all aspects of the description, add or remove properties, etc.
+     */
     @Override
     public Description getDescription() {
-        return DESCRIPTION;
+        return DescriptionBuilder.builder()
+                           .name(PROVIDER_NAME)
+                           .title(PROVIDER_TITLE)
+                           .description(PROVIDER_DESCRIPTION)
+                           .property(
+                                   PropertyUtil.string("tags", "Custom Tags example", "Custom Tags.", false,
+                                               null,null,null, null
+                                   )
+                               )
+                           .build();
     }
 
+   /**
+     * Here is the meat of the plugin implementation, which should perform the appropriate logic for your plugin.
+     */
     @Override
     public ResourceModelSource createResourceModelSource(final Properties properties) throws ConfigurationException {
         final ${javaPluginClass} resource = new ${javaPluginClass}(properties);

@@ -53,4 +53,36 @@ class JavaPluginTemplateGeneratorTest extends Specification {
 
     }
 
+    def "Create WorkflowStep Template"() {
+        when:
+        File tmpDir = File.createTempDir()
+        JavaPluginTemplateGenerator generator = new JavaPluginTemplateGenerator()
+        generator.createTemplate("My WorkflowStep Plugin","WorkflowStep",tmpDir.absolutePath)
+        int compileResult = TestUtils.buildGradle(new File(tmpDir,"my-workflowstep-plugin"))
+
+        then:
+        compileResult == 0
+        new File(tmpDir,"/my-workflowstep-plugin/build.gradle").exists()
+        new File(tmpDir,"/my-workflowstep-plugin/src/main/resources/resources/icon.png").exists()
+        new File(tmpDir,"/my-workflowstep-plugin/README.md").exists()
+        new File(tmpDir,"/my-workflowstep-plugin/src/main/java/com/plugin/myworkflowstepplugin/MyWorkflowstepPlugin.java").exists()
+        new File(tmpDir,"/my-workflowstep-plugin/src/test/groovy/com/plugin/myworkflowstepplugin/MyWorkflowstepPluginSpec.groovy").exists()
+    }
+
+    def "Create WorkflowNodeStep Template"() {
+        when:
+        File tmpDir = File.createTempDir()
+        JavaPluginTemplateGenerator generator = new JavaPluginTemplateGenerator()
+        generator.createTemplate("My WorkflowNodeStep Plugin","WorkflowNodeStep",tmpDir.absolutePath)
+        int compileResult = TestUtils.buildGradle(new File(tmpDir,"my-workflownodestep-plugin"))
+
+        then:
+        compileResult == 0
+        new File(tmpDir,"/my-workflownodestep-plugin/build.gradle").exists()
+        new File(tmpDir,"/my-workflownodestep-plugin/src/main/resources/resources/icon.png").exists()
+        new File(tmpDir,"/my-workflownodestep-plugin/README.md").exists()
+        new File(tmpDir,"/my-workflownodestep-plugin/src/main/java/com/plugin/myworkflownodestepplugin/MyWorkflownodestepPlugin.java").exists()
+        new File(tmpDir,"/my-workflownodestep-plugin/src/test/groovy/com/plugin/myworkflownodestepplugin/MyWorkflownodestepPluginSpec.groovy").exists()
+    }
+
 }

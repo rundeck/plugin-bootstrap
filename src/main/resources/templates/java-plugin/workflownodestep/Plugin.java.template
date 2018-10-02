@@ -1,0 +1,95 @@
+package com.plugin.${javaPluginClass.toLowerCase()};
+
+import com.dtolabs.rundeck.core.common.INodeEntry;
+import com.dtolabs.rundeck.core.execution.workflow.steps.FailureReason;
+import com.dtolabs.rundeck.core.execution.workflow.steps.node.NodeStepException;
+import com.dtolabs.rundeck.core.plugins.Plugin;
+import com.dtolabs.rundeck.core.plugins.configuration.Describable;
+import com.dtolabs.rundeck.core.plugins.configuration.Description;
+import com.dtolabs.rundeck.plugins.ServiceNameConstants;
+import com.dtolabs.rundeck.plugins.descriptions.PluginDescription;
+import com.dtolabs.rundeck.plugins.step.PluginStepContext;
+import com.dtolabs.rundeck.plugins.util.DescriptionBuilder;
+import com.dtolabs.rundeck.plugins.util.PropertyBuilder;
+import com.dtolabs.rundeck.plugins.PluginLogger;
+import com.dtolabs.rundeck.plugins.step.NodeStepPlugin;
+import java.util.Map;
+
+
+@Plugin(service=ServiceNameConstants.WorkflowNodeStep,name="${sanitizedPluginName}")
+@PluginDescription(title="${pluginName}", description="My WorkflowNodeStep plugin description")
+public class ${javaPluginClass} implements NodeStepPlugin, Describable{
+
+    public static final String SERVICE_PROVIDER_NAME = "${sanitizedPluginName}";
+
+   /**
+     * Overriding this method gives the plugin a chance to take part in building the {@link
+     * com.dtolabs.rundeck.core.plugins.configuration.Description} presented by this plugin.  This subclass can use the
+     * {@link DescriptionBuilder} to modify all aspects of the description, add or remove properties, etc.
+     */
+   @Override
+   public Description getDescription() {
+        return DescriptionBuilder.builder()
+            .name(SERVICE_PROVIDER_NAME)
+            .title("${pluginName}")
+            .description("Example WorkflowNode Step")
+            .property(PropertyBuilder.builder()
+                          .string("example")
+                          .title("Example String")
+                          .description("Example description")
+                          .required(true)
+                          .build()
+            )
+            .property(PropertyBuilder.builder()
+                          .booleanType("exampleBoolean")
+                          .title("Example Boolean")
+                          .description("Example Boolean?")
+                          .required(false)
+                          .defaultValue("false")
+                          .build()
+            )
+            .property(PropertyBuilder.builder()
+                          .freeSelect("exampleFreeSelect")
+                          .title("Example Free Select")
+                          .description("Example Free Select")
+                          .required(false)
+                          .defaultValue("Blue")
+                          .values("Blue", "Beige", "Black")
+                          .build()
+            )
+            .build();
+   }
+
+   /**
+     * This enum lists the known reasons this plugin might fail
+     */
+   static enum Reason implements FailureReason{
+        ExampleReason
+   }
+
+   /**
+       * The {@link #performNodeStep(com.dtolabs.rundeck.plugins.step.PluginStepContext,
+       * com.dtolabs.rundeck.core.common.INodeEntry)} method is invoked when your plugin should perform its logic for the
+       * appropriate node.  The {@link PluginStepContext} provides access to the configuration of the plugin, and details
+       * about the step number and context.
+       * <p/>
+       * The {@link INodeEntry} parameter is the node that should be executed on.  Your plugin should make use of the
+       * node's attributes (such has "hostname" or any others required by your plugin) to perform the appropriate action.
+       */
+      @Override
+      public void executeNodeStep(final PluginStepContext context,
+                                  final Map<String, Object> configuration,
+                                  final INodeEntry entry) throws NodeStepException {
+
+           PluginLogger logger= context.getLogger();
+
+           logger.log(2,"Example node step executing on node: " + entry.getNodename());
+           logger.log(2,"Example step extra config: " + configuration);
+           logger.log(2,"Example step num: " + context.getStepNumber());
+           logger.log(2,"Example step context: " + context.getStepContext());
+           if ("true".equals(configuration.get("exampleBoolean"))) {
+               throw new NodeStepException("exampleBoolean was true", Reason.ExampleReason, entry.getNodename());
+           }
+      }
+
+}
