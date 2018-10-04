@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+#Your script here
+HOST=\$1
+shift
+CMD="\$*"
+
+#do a dry run
+if [[ "true" == "\$RD_CONFIG_DRY_RUN" ]] ; then
+    env | grep RD_CONFIG
+    echo "[${sanitizedPluginName}] command to run on node \$HOST:  \$CMD"
+    exit 0
+fi
+
+
+echo "running ${sanitizedPluginName}"
+echo "Example Config: \$RD_CONFIG_EXAMPLE"
+echo "Example Select Config: \$RD_CONFIG_EXAMPLESELECT"
+echo "Connecting with host \$HOST"
+
+## Connect to the host \$HOST and run command \$CMD

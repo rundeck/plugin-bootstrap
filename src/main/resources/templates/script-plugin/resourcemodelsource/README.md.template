@@ -1,0 +1,15 @@
+# ${pluginName} Rundeck Plugin
+
+This is a ${providedService} plugin.
+
+## Build
+
+```
+gradle clean build
+```
+
+## Install
+
+```
+cp build/libs/${sanitizedPluginName}.zip \$RDECK_BASE/libext
+```

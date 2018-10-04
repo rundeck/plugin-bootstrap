@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+#Your script here
+
+if [[ "true" == "\$RD_CONFIG_DEBUG" ]] ; then
+    env | grep RD_CONFIG
+fi
+
+echo "running ${sanitizedPluginName}"
+echo "Example Config: \$RD_CONFIG_EXAMPLE"
+echo "Example Multi-Line Config: \$RD_CONFIG_MULTILINEEXAMPLE"
+echo "Example Select Config: \$RD_CONFIG_EXAMPLESELECT"
