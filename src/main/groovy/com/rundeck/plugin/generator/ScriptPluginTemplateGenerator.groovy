@@ -24,7 +24,7 @@ class ScriptPluginTemplateGenerator extends AbstractTemplateGenerator {
     private static final String TEMPLATE_BASE = "templates/script-plugin/"
     private static final String SCRIPT_STRUCTURE = "script-plugin.structure"
 
-    private static final List<String> ALLOWED_SERVICE_TYPES = ["NodeExecutor","FileCopier","ResourceModelSource","WorkflowNodeStep","RemoteScriptNodeStep"]
+    private static final List<String> ALLOWED_SERVICE_TYPES = ["NodeExecutor","FileCopier","ResourceModelSource","WorkflowNodeStep","RemoteScriptNodeStep","NodeExecutorFileCopier"]
 
     @Override
     Map makeTemplateProperties(final String pluginName, final String providedService) {
@@ -39,7 +39,8 @@ class ScriptPluginTemplateGenerator extends AbstractTemplateGenerator {
 
     @Override
     URL getPluginStructure(final String providedService) {
-        return getClass().getClassLoader().getResource("${TEMPLATE_BASE}${SCRIPT_STRUCTURE}")
+        String path = this.getTemplatePath(providedService)
+        return getClass().getClassLoader().getResource("${TEMPLATE_BASE}${path}/${SCRIPT_STRUCTURE}")
     }
 
     @Override
@@ -56,6 +57,25 @@ class ScriptPluginTemplateGenerator extends AbstractTemplateGenerator {
 
     @Override
     String resolveTemplateName(final String providedService, final String templateName) {
-        return "${getTemplateBase()}$templateName"
+        String path = this.getTemplatePath(providedService)
+        return "${getTemplateBase()}${path}/$templateName"
+    }
+
+    String getTemplatePath(final String providedService){
+        String path=""
+        switch (providedService){
+            case ["WorkflowNodeStep","RemoteScriptNodeStep"] :
+                path="workflow"
+                break
+            case ["FileCopier","NodeExecutor","ResourceModelSource"]:
+                path=providedService.toLowerCase()
+                break
+            case "NodeExecutorFileCopier":
+                path="nodeexecutor-filecopier"
+                break
+
+        }
+
+        return path
     }
 }

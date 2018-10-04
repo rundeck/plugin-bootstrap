@@ -40,7 +40,7 @@ class JavaPluginTemplateGeneratorTest extends Specification {
         when:
         File tmpDir = File.createTempDir()
         JavaPluginTemplateGenerator generator = new JavaPluginTemplateGenerator()
-        generator.createTemplate("My ResourceModel Plugin","ResourceModel",tmpDir.absolutePath)
+        generator.createTemplate("My ResourceModel Plugin","ResourceModelSource",tmpDir.absolutePath)
         int compileResult = TestUtils.buildGradle(new File(tmpDir,"my-resourcemodel-plugin"))
 
         then:

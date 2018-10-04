@@ -8,17 +8,32 @@ Download the tar or zip distribution, cd to the bin directory, and run:
 
 ./rundeck-plugin-bootstrap -n MyRundeckPlugin -t java -s Notification -d /tmp
 
-A Java notification plugin will be created at /tmp/myrundeckplugin. You can cd into that directory,
-run `gradle build` and you will have an installable notification plugin that you can put in your Rundeck installation.
+A Java/Script notification plugin will be created at /tmp/myrundeckplugin. You can cd into that directory,
+run `gradle build` and you will have an installable plugin that you can put in your Rundeck installation.
 
-* Note: At this time only Notification plugins can be bootstrapped with this utility.
 
-Other examples: 
+## Existing service plugins enabled on boostrap-plugin
+
+Java Plugins:
+* ResourceModelSource
+* Notification
+* WorkflowStep
+* WorkflowNodeStep
+
+Script Plugins:
+* ResourceModelSource
+* WorkflowNodeStep
+* RemoteScriptNodeStep
+* NodeExecutor
+* FileCopier
+* NodeExecutorFileCopier: Generate both, Node Executor and File Copier service 
+
+## Other Examples: 
 
 Create a script plugin:
 
-./rundeck-plugin-bootstrap -n MyNodeExecutorPlugin -t script -s NodeExecutor /tmp
+./rundeck-plugin-bootstrap -n MyNodeExecutorPlugin -t script -s NodeExecutor -d /tmp
 
 Create a UI script plugin:
 
-./rundeck-plugin-bootstrap -n MyUIPlugin -t ui -s UI /tmp
+./rundeck-plugin-bootstrap -n MyUIPlugin -t ui -s UI -d /tmp
