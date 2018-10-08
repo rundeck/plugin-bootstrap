@@ -85,4 +85,20 @@ class JavaPluginTemplateGeneratorTest extends Specification {
         new File(tmpDir,"/my-workflownodestep-plugin/src/test/groovy/com/plugin/myworkflownodestepplugin/MyWorkflownodestepPluginSpec.groovy").exists()
     }
 
+    def "Create Logfilter Template"() {
+        when:
+        File tmpDir = File.createTempDir()
+        JavaPluginTemplateGenerator generator = new JavaPluginTemplateGenerator()
+        generator.createTemplate("My LogFilter Plugin","LogFilter",tmpDir.absolutePath)
+        int compileResult = TestUtils.buildGradle(new File(tmpDir,"my-logfilter-plugin"))
+
+        then:
+        compileResult == 0
+        new File(tmpDir,"/my-logfilter-plugin/build.gradle").exists()
+        new File(tmpDir,"/my-logfilter-plugin/src/main/resources/resources/icon.png").exists()
+        new File(tmpDir,"/my-logfilter-plugin/README.md").exists()
+        new File(tmpDir,"/my-logfilter-plugin/src/main/java/com/plugin/mylogfilterplugin/MyLogfilterPlugin.java").exists()
+        new File(tmpDir,"/my-logfilter-plugin/src/test/groovy/com/plugin/mylogfilterplugin/MyLogfilterPluginSpec.groovy").exists()
+    }
+
 }

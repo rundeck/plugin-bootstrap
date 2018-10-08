@@ -41,3 +41,21 @@ providers:
           default: true
           renderingOptions:
             groupName: 'Config'
+        - type: String
+          name: storageprivatekey
+          title: Storage Private Key
+          description: Access to storage private key example
+          renderingOptions:
+            selectionAccessor: "STORAGE_PATH"
+            valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+            storage-path-root: "keys"
+            storage-file-meta-filter: "Rundeck-key-type=private"
+        - type: String
+          name: storagepassword
+          title: Storage Password
+          description: Access to storage password example
+          renderingOptions:
+            selectionAccessor: "STORAGE_PATH"
+            valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+            storage-path-root: "keys"
+            storage-file-meta-filter: "Rundeck-data-type=password"
