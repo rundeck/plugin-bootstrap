@@ -19,6 +19,7 @@ Java Plugins:
 * Notification
 * WorkflowStep
 * WorkflowNodeStep
+* LogFilter
 
 Script Plugins:
 * ResourceModelSource
