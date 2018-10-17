@@ -1,9 +1,16 @@
 plugins {
     id 'groovy'
     id 'application'
+    id "nebula.ospackage" version "4.8.0"
+    id 'pl.allegro.tech.build.axion-release' version '1.4.1'
+    id 'com.github.johnrengelman.shadow' version '2.0.3'
+
 }
 
 mainClassName = 'com.rundeck.plugin.Generator'
+applicationName = 'rundeck-plugin-bootstrap'
+ext.distInstallPath = '/var/lib/rundeck-pb'
+defaultTasks 'clean', 'build'
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.13'
@@ -19,3 +26,62 @@ repositories {
     mavenLocal()
     maven { url "https://jitpack.io" }
 }
+
+scmVersion {
+    ignoreUncommittedChanges = false
+    tag {
+        prefix = ''
+        versionSeparator = ''
+        def origDeserialize=deserialize
+        //apend .0 to satisfy semver if the tag version is only X.Y
+        deserialize = { config, position, tagName ->
+            def orig = origDeserialize(config, position, tagName)
+            if (orig.split('\\.').length < 3) {
+                orig += ".0"
+            }
+            orig
+        }
+    }
+}
+
+allprojects {
+    project.version = scmVersion.version
+    ext.rpmVersion=project.version.replaceAll('-', '.')
+}
+
+
+//force distZip/distTar artifacts to be overwritten by shadow versions
+shadowDistZip.mustRunAfter distZip
+shadowDistTar.mustRunAfter distTar
+
+/**
+ * Define rpm/deb details
+ */
+ospackage {
+    version = rpmVersion
+    release = 1
+    summary = "Bootstrap your Rundeck plugin development with this easy command line utility."
+    packageDescription = "The rundeck-plugin-bootstrap program provides an easy command line utility to create plugins for rundeck"
+    url = 'https://github.com/rundeck/plugin-bootstrap'
+    vendor = 'Rundeck, Inc.'
+    license = 'APL'
+    os = 'LINUX'
+    packageGroup = 'System'
+    user = 'root'
+
+    //packaging includes the shadowDistZip contents, exclude *.bat
+    from(zipTree(shadowDistZip.outputs.files.singleFile)) {
+        exclude '**/*.bat'
+        into distInstallPath
+    }
+
+    def archivedir=shadowDistZip.archiveName - ".${shadowDistZip.extension}"
+
+    //symlink /usr/bin/rd to the rd script
+    link("/usr/bin/${applicationName}", "${distInstallPath}/${archivedir}/bin/${applicationName}")
+}
+
+//depend on the shadow artifact
+buildDeb.dependsOn shadowDistZip
+buildRpm.dependsOn shadowDistZip
+assemble.dependsOn buildRpm, buildDeb
