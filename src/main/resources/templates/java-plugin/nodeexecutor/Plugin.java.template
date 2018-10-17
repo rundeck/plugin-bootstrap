@@ -1,0 +1,123 @@
+package com.plugin.${javaPluginClass.toLowerCase()};
+
+import com.dtolabs.rundeck.core.common.INodeEntry;
+import com.dtolabs.rundeck.core.execution.ExecutionContext;
+import com.dtolabs.rundeck.core.execution.ExecutionLogger;
+import com.dtolabs.rundeck.core.execution.service.NodeExecutor;
+import com.dtolabs.rundeck.core.execution.service.NodeExecutorResult;
+import com.dtolabs.rundeck.core.execution.service.NodeExecutorResultImpl;
+import com.dtolabs.rundeck.core.execution.utils.ResolverUtil;
+import com.dtolabs.rundeck.core.execution.workflow.steps.StepFailureReason;
+import com.dtolabs.rundeck.core.plugins.Plugin;
+import com.dtolabs.rundeck.core.plugins.configuration.Describable;
+import com.dtolabs.rundeck.core.plugins.configuration.Description;
+import com.dtolabs.rundeck.plugins.ServiceNameConstants;
+import com.dtolabs.rundeck.plugins.descriptions.PluginDescription;
+import com.dtolabs.rundeck.plugins.util.DescriptionBuilder;
+import com.dtolabs.rundeck.plugins.util.PropertyBuilder;
+import java.util.Arrays;
+
+@Plugin(service=ServiceNameConstants.NodeExecutor,name="${sanitizedPluginName}")
+@PluginDescription(title="${pluginName}", description="My WorkflowStep plugin description")
+public class ${javaPluginClass} implements NodeExecutor, Describable{
+
+    public static final String SERVICE_PROVIDER_NAME = "${sanitizedPluginName}";
+
+    public static final String PROJ_PROP_PREFIX = "project.";
+    public static final String FWK_PROP_PREFIX = "framework.";
+
+    public static final String SIMPLE_CONFIG_STRING = "exampleConfig";
+    public static final String SIMPLE_CONFIG_BOOLEAN = "forceFail";
+    public static final String SIMPLE_CONFIG_SELECT= "exampleSelect";
+
+   /**
+     * Overriding this method gives the plugin a chance to take part in building the {@link
+     * com.dtolabs.rundeck.core.plugins.configuration.Description} presented by this plugin.  This subclass can use the
+     * {@link DescriptionBuilder} to modify all aspects of the description, add or remove properties, etc.
+     */
+   @Override
+   public Description getDescription() {
+        DescriptionBuilder builder = DescriptionBuilder.builder()
+            .name(SERVICE_PROVIDER_NAME)
+            .title("${pluginName}")
+            .description("Example Workflow Step")
+            .property(PropertyBuilder.builder()
+                                  .string(SIMPLE_CONFIG_STRING)
+                                  .title("Example String")
+                                  .description("Example description")
+                                  .required(true)
+                                  .build()
+                        )
+                        .property(PropertyBuilder.builder()
+                                      .booleanType(SIMPLE_CONFIG_BOOLEAN)
+                                      .title("Force Fail")
+                                      .description("Example Boolean, Force Fail Command?")
+                                      .required(false)
+                                      .defaultValue("false")
+                                      .build()
+                        )
+                        .property(PropertyBuilder.builder()
+                                      .freeSelect(SIMPLE_CONFIG_SELECT)
+                                      .title("Example Free Select")
+                                      .description("Example Free Select")
+                                      .required(false)
+                                      .defaultValue("Blue")
+                                      .values("Blue", "Beige", "Black")
+                                      .build()
+                        );
+
+        //mapping config input on project and framework level
+        builder.mapping(SIMPLE_CONFIG_STRING, PROJ_PROP_PREFIX + SIMPLE_CONFIG_STRING);
+        builder.frameworkMapping(SIMPLE_CONFIG_STRING, FWK_PROP_PREFIX + SIMPLE_CONFIG_STRING);
+
+        builder.mapping(SIMPLE_CONFIG_BOOLEAN, PROJ_PROP_PREFIX + SIMPLE_CONFIG_BOOLEAN);
+        builder.frameworkMapping(SIMPLE_CONFIG_BOOLEAN, FWK_PROP_PREFIX + SIMPLE_CONFIG_BOOLEAN);
+
+        builder.mapping(SIMPLE_CONFIG_SELECT, PROJ_PROP_PREFIX + SIMPLE_CONFIG_SELECT);
+        builder.frameworkMapping(SIMPLE_CONFIG_SELECT, FWK_PROP_PREFIX + SIMPLE_CONFIG_SELECT);
+
+        return builder.build();
+   }
+
+   @Override
+   public NodeExecutorResult executeCommand(ExecutionContext context, String[] command, INodeEntry node) {
+       ExecutionLogger logger= context.getExecutionLogger();
+
+       String exampleValue = ResolverUtil.resolveProperty(SIMPLE_CONFIG_STRING,
+                                                           null,
+                                                           node,
+                                                           context.getFramework().getFrameworkProjectMgr().getFrameworkProject(context.getFrameworkProject()),
+                                                           context.getFramework());
+
+
+       String exampleFreeSelect = ResolverUtil.resolveProperty(SIMPLE_CONFIG_SELECT,
+                                                           null,
+                                                           node,
+                                                           context.getFramework().getFrameworkProjectMgr().getFrameworkProject(context.getFrameworkProject()),
+                                                           context.getFramework());
+
+       Boolean forceFail = ResolverUtil.resolveBooleanProperty(SIMPLE_CONFIG_BOOLEAN,
+                                                           false,
+                                                           node,
+                                                           context.getFramework().getFrameworkProjectMgr().getFrameworkProject(context.getFrameworkProject()),
+                                                           context.getFramework());
+
+       logger.log(2,"[demo-info] Running command: " + Arrays.toString(command) + " on node " + node.getNodename());
+       logger.log(2,"[demo-info] node attribute hostname: " + node.getAttributes().get("hostname"));
+       logger.log(2,"[demo-info] node attribute osFamily: " + node.getAttributes().get("osFamily"));
+       logger.log(2,"[demo-info] Example Value: " + exampleValue);
+       logger.log(2,"[demo-info] ExampleFree Value: " + exampleFreeSelect);
+       logger.log(2,"[demo-info] forceFail Value: " + forceFail);
+       if (forceFail) {
+           logger.log(0,"[demo-error] force to fail");
+           return NodeExecutorResultImpl.createFailure(
+               StepFailureReason.ConfigurationFailure,
+               "[demo-error] Error connecting with node '" + node.getNodename() + "'",
+               node
+           );
+       }
+
+       return NodeExecutorResultImpl.createSuccess(node);
+   }
+
+}

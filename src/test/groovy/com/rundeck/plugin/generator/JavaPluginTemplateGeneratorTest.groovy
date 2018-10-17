@@ -101,4 +101,20 @@ class JavaPluginTemplateGeneratorTest extends Specification {
         new File(tmpDir,"/my-logfilter-plugin/src/test/groovy/com/plugin/mylogfilterplugin/MyLogfilterPluginSpec.groovy").exists()
     }
 
+    def "Create NodeExecutor Template"() {
+        when:
+        File tmpDir = File.createTempDir()
+        JavaPluginTemplateGenerator generator = new JavaPluginTemplateGenerator()
+        generator.createTemplate("My NodeExecutor Plugin","NodeExecutor",tmpDir.absolutePath)
+        int compileResult = TestUtils.buildGradle(new File(tmpDir,"my-nodeexecutor-plugin"))
+
+        then:
+        compileResult == 0
+        new File(tmpDir,"/my-nodeexecutor-plugin/build.gradle").exists()
+        new File(tmpDir,"/my-nodeexecutor-plugin/src/main/resources/resources/icon.png").exists()
+        new File(tmpDir,"/my-nodeexecutor-plugin/README.md").exists()
+        new File(tmpDir,"/my-nodeexecutor-plugin/src/main/java/com/plugin/mynodeexecutorplugin/MyNodeexecutorPlugin.java").exists()
+        new File(tmpDir,"/my-nodeexecutor-plugin/src/test/groovy/com/plugin/mynodeexecutorplugin/MyNodeexecutorPluginSpec.groovy").exists()
+    }
+
 }

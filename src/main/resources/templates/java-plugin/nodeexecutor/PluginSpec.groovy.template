@@ -1,0 +1,82 @@
+package com.plugin.${javaPluginClass.toLowerCase()}
+
+import com.dtolabs.rundeck.plugins.step.PluginStepContext
+import com.dtolabs.rundeck.core.execution.ExecutionContext
+import com.dtolabs.rundeck.core.execution.ExecutionLogger
+import com.dtolabs.rundeck.core.execution.workflow.steps.StepException
+import com.dtolabs.rundeck.plugins.PluginLogger
+import com.dtolabs.rundeck.core.common.Framework
+import com.dtolabs.rundeck.core.common.INodeEntry;
+import com.dtolabs.rundeck.core.common.IRundeckProject
+import spock.lang.Specification
+import com.dtolabs.rundeck.core.common.ProjectManager
+import com.dtolabs.rundeck.core.common.IRundeckProject
+
+class ${javaPluginClass}Spec extends Specification {
+
+    def getContext(ExecutionLogger logger, Boolean fail){
+
+            def manager = Mock(ProjectManager){
+                getFrameworkProject(_)>> Mock(IRundeckProject) {
+                    hasProperty(('project.exampleConfig')) >> true
+                    getProperty(('project.exampleConfig')) >> "123345"
+                    hasProperty(('project.exampleSelect')) >> true
+                    getProperty(('project.exampleSelect')) >> "Blue"
+                    hasProperty(('project.forceFail')) >> fail
+                    getProperty(('project.forceFail')) >> fail
+                }
+            }
+
+            Mock(ExecutionContext){
+                getExecutionLogger()>>logger
+                getFrameworkProject() >> "test"
+                getFramework() >> Mock(Framework) {
+                    getFrameworkProjectMgr() >> manager
+                }
+
+            }
+        }
+
+    def "check Boolean parameter"(){
+
+        given:
+
+        String[] command = ["ls","-lrt"]
+        def logger = Mock(ExecutionLogger)
+        def example = new ${javaPluginClass}()
+        def context = getContext(logger,true)
+        def node = Mock(INodeEntry){
+            getNodename()>>"test"
+            getAttributes()>>["hostname":"Test","osFamily":"linux","forceFail":"true"]
+        }
+
+        when:
+        example.executeCommand(context, command, node)
+
+        then:
+        1 * logger.log(0, '[demo-error] force to fail')
+
+    }
+
+    def "run OK"(){
+
+        given:
+
+        String[] command = ["ls","-lrt"]
+        def logger = Mock(ExecutionLogger)
+        def example = new ${javaPluginClass}()
+        def context = getContext(logger,false)
+        def node = Mock(INodeEntry){
+            getNodename()>>"test"
+            getAttributes()>>["hostname":"Test","osFamily":"linux"]
+        }
+
+        when:
+        example.executeCommand(context, command, node)
+
+        then:
+        1 * logger.log(2, '[demo-info] Running command: [ls, -lrt] on node test')
+
+    }
+
+}
