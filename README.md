@@ -20,6 +20,7 @@ Java Plugins:
 * WorkflowStep
 * WorkflowNodeStep
 * LogFilter
+* NodeExecutor
 
 Script Plugins:
 * ResourceModelSource
