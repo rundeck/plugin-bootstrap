@@ -4,17 +4,51 @@
 
 Bootstrap your Rundeck plugin development with this easy command line utility. 
 
-Download the tar or zip distribution, cd to the bin directory, and run:
 
-./rundeck-plugin-bootstrap -n MyRundeckPlugin -t java -s Notification -d /tmp
-
-A Java/Script notification plugin will be created at /tmp/myrundeckplugin. You can cd into that directory,
-run `gradle build` and you will have an installable plugin that you can put in your Rundeck installation.
+## Install
 
 
-## Existing service plugins enabled on boostrap-plugin
+* From zip file: 
+Download the tar or zip distribution, cd to the bin directory.
 
-Java Plugins:
+* From deb package:
+
+```
+sudo dpkg -i rundeck-plugin-bootstrap-X.Y.Z-1_all.deb
+```
+
+* From rpm package:
+
+```
+sudo rpm -i rundeck-plugin-bootstrap-X.Y.Z-1.noarch.rpm
+```
+
+## How to use it
+
+Run the following command to get the available options
+```
+./rundeck-plugin-bootstrap help
+```
+
+The options available are:
+
+* `--destinationDirectory or -d` : The directory in which the artifact directory will be generated
+* `--pluginName or -n` : Plugin Name
+* `--pluginType or -t` : Plugin Type
+* `--serviceType or -s` : Rundeck Service Type
+
+
+### Plugin Type options (`-t`)
+
+The plugins that can be created with the bootstrap client are:
+* `script`: it creates a script plugin
+* `java`: it creates a java plugin
+* `ui`: it creates a UI plugin
+
+### Rundeck Service Type (`-s`)
+Existing service plugins enabled on boostrap-plugin
+
+#### for Java Plugins:
 * ResourceModelSource
 * Notification
 * WorkflowStep
@@ -22,7 +56,7 @@ Java Plugins:
 * LogFilter
 * NodeExecutor
 
-Script Plugins:
+#### for Script Plugins:
 * ResourceModelSource
 * WorkflowNodeStep
 * RemoteScriptNodeStep
@@ -30,12 +64,30 @@ Script Plugins:
 * FileCopier
 * NodeExecutorFileCopier: Generate both, Node Executor and File Copier service 
 
-## Other Examples: 
+#### for UI plugins
+* UI
 
-Create a script plugin:
+## Examples: 
 
-./rundeck-plugin-bootstrap -n MyNodeExecutorPlugin -t script -s NodeExecutor -d /tmp
+* Create a script plugin:
 
-Create a UI script plugin:
+```
+rundeck-plugin-bootstrap -n MyNodeExecutorPlugin -t script -s NodeExecutor -d /tmp
+```
 
-./rundeck-plugin-bootstrap -n MyUIPlugin -t ui -s UI -d /tmp
+A Script NodeExecutor plugin will be created at /tmp/mynodeexecutorplugin. 
+You can cd into that directory, run `gradle build` and you will have an installable plugin that you can put in your Rundeck installation.
+
+
+* Create a UI script plugin:
+
+```
+rundeck-plugin-bootstrap -n MyUIPlugin -t ui -s UI -d /tmp
+```
+
+* Create a notification java plugin:
+
+```
+rundeck-plugin-bootstrap -n MyRundeckNotificationPlugin -t java -s Notification -d /tmp
+
+```
