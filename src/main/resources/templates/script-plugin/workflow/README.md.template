@@ -12,7 +12,7 @@ gradle clean build
 * Using make
 
 ```
-make clean install
+make clean build
 ```
 
 ## Install

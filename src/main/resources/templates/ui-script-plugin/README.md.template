@@ -6,7 +6,7 @@ This is a ${providedService} plugin.
 
 Using make:
 ```
-make clean install
+make clean build
 ```
 
 ## Install
