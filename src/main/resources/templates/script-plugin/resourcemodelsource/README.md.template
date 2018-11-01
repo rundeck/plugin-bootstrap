@@ -4,8 +4,15 @@ This is a ${providedService} plugin.
 
 ## Build
 
+* Using gradle
 ```
 gradle clean build
+```
+
+* Using make
+
+```
+make clean build
 ```
 
 ## Install

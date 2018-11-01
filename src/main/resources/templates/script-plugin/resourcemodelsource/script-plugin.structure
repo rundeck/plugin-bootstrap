@@ -3,4 +3,6 @@ resource.template->contents/resource
 icon.png->resources/icon.png
 README.md.template->README.md
 build.gradle.template->build.gradle
+Makefile.template->Makefile
+
 

@@ -2,3 +2,15 @@
 
 This is a ${providedService} plugin.
 
+## Build
+
+Using make:
+```
+make clean build
+```
+
+## Install
+
+```
+cp build/libs/${sanitizedPluginName}.zip \$RDECK_BASE/libext
+```
