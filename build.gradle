@@ -83,6 +83,6 @@ buildDeb.dependsOn shadowDistZip
 buildRpm.dependsOn shadowDistZip
 assemble.dependsOn buildRpm, buildDeb
 
-task wrapper(type: Wrapper) {
+wrapper {
     gradleVersion = '4.7'
 }
