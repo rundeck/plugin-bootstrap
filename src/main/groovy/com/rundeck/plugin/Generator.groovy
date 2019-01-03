@@ -31,10 +31,10 @@ class Generator {
     private static final List<String> VALID_PLUGIN_TYPES = ["java","script","ui"]
 
     public static void main(String[] args) throws IOException, CommandRunFailure {
-        ToolBelt.with("verb", new JewelInput(), new Generator()).runMain(args, true);
+        ToolBelt.with("plugin-bootstrap", new JewelInput(), new Generator()).runMain(args, true);
     }
 
-    @Command(description = "Create a Verb artifact")
+    @Command(description = "Create a Rundeck plugin artifact")
     public void create(CreateOpts createOpts) {
         if(!VALID_PLUGIN_TYPES.contains(createOpts.pluginType)) {
             println "Artifact type must be one of: ${VALID_PLUGIN_TYPES.join("|")}"

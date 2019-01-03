@@ -34,9 +34,6 @@ jar {
         attributes 'Rundeck-Plugin-Tags': 'java,notification'
         attributes 'Rundeck-Plugin-Version': rundeckPluginVersion, 'Rundeck-Plugin-Archive': 'true'
     }
-    from("rundeck-verb-artifact.yaml") {
-        into("")
-    }
 }
 
 task wrapper(type: Wrapper) {
