@@ -24,7 +24,7 @@ class JavaPluginTemplateGenerator extends AbstractTemplateGenerator {
     private static final String TEMPLATE_BASE = "templates/java-plugin/"
     private static final String JAVA_STRUCTURE = "java-plugin.structure"
 
-    private static final List ALLOWED_TEMPLATES = ["ResourceModelSource","Notification","WorkflowStep","WorkflowNodeStep","LogFilter","NodeExecutor"]
+    private static final List ALLOWED_TEMPLATES = ["ResourceModelSource","Notification","WorkflowStep","WorkflowNodeStep","LogFilter","NodeExecutor","Orchestrator"]
 
     @Override
     Map makeTemplateProperties(final String pluginName, final String providedService) {

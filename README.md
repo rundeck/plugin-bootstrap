@@ -55,6 +55,7 @@ Existing service plugins enabled on boostrap-plugin
 * WorkflowNodeStep
 * LogFilter
 * NodeExecutor
+* Orchestrator
 
 #### for Script Plugins:
 * ResourceModelSource
