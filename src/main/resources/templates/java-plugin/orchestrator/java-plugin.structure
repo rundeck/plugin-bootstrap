@@ -1,0 +1,7 @@
+build.gradle.template->build.gradle
+README.md.template->README.md
+icon.png->src/main/resources/resources/icon.png
+Plugin.java.template->src/main/java/com/plugin/${javaPluginClass.toLowerCase()}/${javaPluginClass}.java
+PluginOrchestrator.java.template->src/main/java/com/plugin/${javaPluginClass.toLowerCase()}/${javaPluginClass}Orchestrator.java
+PluginSpec.groovy.template->src/test/groovy/com/plugin/${javaPluginClass.toLowerCase()}/${javaPluginClass}Spec.groovy
+
