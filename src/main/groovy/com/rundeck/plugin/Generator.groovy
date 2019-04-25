@@ -1,13 +1,14 @@
 package com.rundeck.plugin
 
-import com.lexicalscope.jewel.cli.Option
 import com.rundeck.plugin.template.FilesystemArtifactTemplateGenerator
 import com.rundeck.plugin.template.PluginType
-import org.rundeck.toolbelt.Command
-import org.rundeck.toolbelt.CommandRunFailure
-import org.rundeck.toolbelt.SubCommand
-import org.rundeck.toolbelt.ToolBelt
-import org.rundeck.toolbelt.input.jewelcli.JewelInput
+import com.rundeck.plugin.template.ServiceType
+import picocli.CommandLine
+import picocli.CommandLine.Option
+import picocli.CommandLine.Command
+
+
+import java.util.concurrent.Callable
 
 /*
  * Copyright 2018 Rundeck, Inc. (http://rundeck.com)
@@ -25,36 +26,36 @@ import org.rundeck.toolbelt.input.jewelcli.JewelInput
  * limitations under the License.
  */
 
-@SubCommand
-class Generator {
+@Command(description = "Create a Rundeck plugin artifact.",
+        name = "plugin-bootstrap", mixinStandardHelpOptions = true, version = "1.1")
+class Generator implements Callable<Void>{
 
-    private static final List<String> VALID_PLUGIN_TYPES = ["java","script","ui"]
-
-    public static void main(String[] args) throws IOException, CommandRunFailure {
-        ToolBelt.with("plugin-bootstrap", new JewelInput(), new Generator()).runMain(args, true);
-    }
-
-    @Command(description = "Create a Rundeck plugin artifact")
-    public void create(CreateOpts createOpts) {
-        if(!VALID_PLUGIN_TYPES.contains(createOpts.pluginType)) {
-            println "Artifact type must be one of: ${VALID_PLUGIN_TYPES.join("|")}"
-            return
+    static void main(String[] args) throws Exception {
+        try{
+            CommandLine.call(new Generator(), args)
+        }catch(Exception e){
+            println(e.getMessage())
         }
-        FilesystemArtifactTemplateGenerator generator = new FilesystemArtifactTemplateGenerator()
-        println generator.generate(createOpts.pluginName,
-                                          PluginType.valueOf(createOpts.pluginType),
-                                          createOpts.serviceType,
-                                          createOpts.destinationDirectory)
     }
 
-    interface CreateOpts {
-        @Option(shortName = "n",description = "Plugin Name")
-        String getPluginName()
-        @Option(shortName = "t",description = "Plugin Type")
-        String getPluginType()
-        @Option(shortName = "s",description = "Rundeck Service Type")
-        String getServiceType()
-        @Option(shortName = "d",description = "The directory in which the artifact directory will be generated")
-        String getDestinationDirectory()
+    @Option(names = [ "-n", "--pluginName" ], description = "Plugin Name." , required = true)
+    String pluginName;
+    @Option(names = [ "-t", "--pluginType" ] ,description = 'Plugin Type: ${COMPLETION-CANDIDATES}' , required = true)
+    PluginType pluginType;
+    @Option(names = [ "-s", "--serviceType" ],description = 'Rundeck Service Type: ${COMPLETION-CANDIDATES}', required = true)
+    ServiceType serviceType
+    @Option(names = [ "-d", "--destinationDirectory" ],description = "The directory in which the artifact directory will be generated", required = true)
+    String destinationDirectory
+
+    @Override
+    Void call() throws Exception {
+        FilesystemArtifactTemplateGenerator generator = new FilesystemArtifactTemplateGenerator()
+
+        println generator.generate(this.pluginName,
+                this.pluginType,
+                this.serviceType.toString(),
+                this.destinationDirectory)
+
+        return null
     }
 }

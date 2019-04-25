@@ -56,6 +56,7 @@ Existing service plugins enabled on boostrap-plugin
 * LogFilter
 * NodeExecutor
 * Orchestrator
+* Option
 
 #### for Script Plugins:
 * ResourceModelSource
@@ -64,6 +65,7 @@ Existing service plugins enabled on boostrap-plugin
 * NodeExecutor
 * FileCopier
 * NodeExecutorFileCopier: Generate both, Node Executor and File Copier service 
+* Option
 
 #### for UI plugins
 * UI

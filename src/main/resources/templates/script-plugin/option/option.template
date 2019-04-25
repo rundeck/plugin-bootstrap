@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -eu
+
+echo "==START_OPTIONS=="
+echo "opt1:First Option"
+echo "opt2:Second Option"
+echo "==END_OPTIONS=="

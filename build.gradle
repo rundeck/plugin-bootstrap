@@ -23,6 +23,8 @@ dependencies {
     compile 'com.github.rundeck.cli-toolbelt:toolbelt:0.2.2'
     compile 'com.github.rundeck.cli-toolbelt:toolbelt-jewelcli:0.2.2'
     compile 'org.apache.commons:commons-text:1.4'
+    compile 'info.picocli:picocli:4.0.0-alpha-2'
+
 
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }

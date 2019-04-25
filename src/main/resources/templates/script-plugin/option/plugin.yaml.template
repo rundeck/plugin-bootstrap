@@ -1,0 +1,30 @@
+name: ${pluginName}
+rundeckPluginVersion: 2.0
+author: Rundeck Dev
+description: Describe your plugin here
+rundeckCompatibilityVersion: 3.x
+targetHostCompatibility: unix
+license: Apache 2.0
+tags:
+    - option
+    - ${providedService}
+date: ${currentDate}
+version: 1.0.0
+providers:
+    - name: ${sanitizedPluginName}
+      service: OptionValues
+      title: ${pluginName}
+      description: The description of ${sanitizedPluginName} plugin
+      plugin-type: script
+      script-interpreter: /bin/bash
+      script-file: option
+      config:
+        - type: String
+          name: example
+          title: 'Example String'
+          description: 'Example String'
+          required: false
+        - type: Boolean
+          name: debug
+          title: Debug?
+          description: 'Write debug messages to stderr'
