@@ -30,7 +30,7 @@ configurations{
 }
 
 dependencies {
-    compile 'org.rundeck:rundeck-core:3.0.1+'
+    compile 'org.rundeck:rundeck-core:3.0.14+'
 
     //use pluginLibs to add dependecies, example:
     //pluginLibs group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
@@ -58,7 +58,7 @@ jar {
         attributes 'Rundeck-Plugin-Rundeck-Compatibility-Version': '3.x'
         attributes 'Rundeck-Plugin-Tags': 'java,logfilter'
         attributes 'Rundeck-Plugin-License': 'Apache 2.0'
-        attributes 'Rundeck-Plugin-Source-Link': 'https://github.com/rundeck/plugin-bootstrap'
+        attributes 'Rundeck-Plugin-Source-Link': 'Please put the link to your source repo here'
         attributes 'Rundeck-Plugin-Target-Host-Compatibility': 'all'
         attributes 'Rundeck-Plugin-Version': rundeckPluginVersion
         attributes 'Rundeck-Plugin-Archive': 'true'
