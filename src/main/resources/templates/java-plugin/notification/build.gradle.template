@@ -1,3 +1,8 @@
+plugins {
+    id 'groovy'
+    id 'java'
+}
+
 version = '0.1.0'
 defaultTasks 'clean','build'
 apply plugin: 'java'
@@ -6,6 +11,7 @@ apply plugin: 'idea'
 sourceCompatibility = 1.8
 ext.rundeckPluginVersion= '2.0'
 ext.rundeckVersion= '${rundeckVersion}'
+ext.pluginClassNames='com.plugin.${sanitizedPluginName}.${javaPluginClass}'
 
 
 repositories {
@@ -13,24 +19,45 @@ repositories {
     mavenCentral()
 }
 
+configurations{
+    //declare custom pluginLibs configuration to include only libs for this plugin
+    pluginLibs
+
+    //declare compile to extend from pluginLibs so it inherits the dependencies
+    compile{
+        extendsFrom pluginLibs
+    }
+}
+
 dependencies {
-    compile 'org.rundeck:rundeck-core:3.0.1+'
+    compile 'org.rundeck:rundeck-core:3.0.14+'
+
+    //use pluginLibs to add dependecies, example:
+    //pluginLibs group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
 
     testCompile 'junit:junit:4.12'
     testCompile "org.codehaus.groovy:groovy-all:2.4.15"
     testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
 }
 
-ext.pluginClassNames='com.plugin.${sanitizedPluginName}.${javaPluginClass}'
 jar {
+    from "\$buildDir/output"
     manifest {
+        def libList = configurations.pluginLibs.collect{'lib/'+it.name}.join(' ')
+
         attributes 'Rundeck-Plugin-Classnames': pluginClassNames
         attributes 'Rundeck-Plugin-File-Version': version
         attributes 'Rundeck-Plugin-Name': '${pluginName}'
         attributes 'Rundeck-Plugin-Description': 'Provide a short description of your plugin here.'
         attributes 'Rundeck-Plugin-Rundeck-Compatibility-Version': '3.x'
         attributes 'Rundeck-Plugin-Tags': 'java,notification'
-        attributes 'Rundeck-Plugin-Version': rundeckPluginVersion, 'Rundeck-Plugin-Archive': 'true'
+        attributes 'Rundeck-Plugin-License': 'Apache 2.0'
+        attributes 'Rundeck-Plugin-Source-Link': 'Please put the link to your source repo here'
+        attributes 'Rundeck-Plugin-Target-Host-Compatibility': 'all'
+        attributes 'Rundeck-Plugin-Version': rundeckPluginVersion
+        attributes 'Rundeck-Plugin-Archive': 'true'
+        attributes 'Rundeck-Plugin-Libs': "\${libList}"
+
     }
 }
 

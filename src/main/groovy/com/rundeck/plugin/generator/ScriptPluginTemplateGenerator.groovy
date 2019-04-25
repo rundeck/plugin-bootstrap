@@ -24,7 +24,7 @@ class ScriptPluginTemplateGenerator extends AbstractTemplateGenerator {
     private static final String TEMPLATE_BASE = "templates/script-plugin/"
     private static final String SCRIPT_STRUCTURE = "script-plugin.structure"
 
-    private static final List<String> ALLOWED_SERVICE_TYPES = ["NodeExecutor","FileCopier","ResourceModelSource","WorkflowNodeStep","RemoteScriptNodeStep","NodeExecutorFileCopier"]
+    private static final List<String> ALLOWED_SERVICE_TYPES = ["NodeExecutor","FileCopier","ResourceModelSource","WorkflowNodeStep","RemoteScriptNodeStep","NodeExecutorFileCopier","Option"]
 
     @Override
     Map makeTemplateProperties(final String pluginName, final String providedService) {
@@ -51,7 +51,7 @@ class ScriptPluginTemplateGenerator extends AbstractTemplateGenerator {
     @Override
     void preTemplateValidations(String providedService) {
         if(!ALLOWED_SERVICE_TYPES.contains(providedService)) {
-            throw new Exception("Script plugins do not support serivice: ${providedService}. Allowed types are: ${ALLOWED_SERVICE_TYPES.join(", ")}")
+            throw new Exception("Script plugin does not support this service: ${providedService}. Allowed types are: ${ALLOWED_SERVICE_TYPES.join(", ")}")
         }
     }
 
@@ -72,6 +72,9 @@ class ScriptPluginTemplateGenerator extends AbstractTemplateGenerator {
                 break
             case "NodeExecutorFileCopier":
                 path="nodeexecutor-filecopier"
+                break
+            default:
+                path=providedService.toLowerCase()
                 break
 
         }

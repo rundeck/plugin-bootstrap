@@ -5,14 +5,10 @@ plugins {
 
 version = '0.1.0'
 defaultTasks 'clean','build'
-apply plugin: 'java'
-apply plugin: 'groovy'
-apply plugin: 'idea'
 sourceCompatibility = 1.8
 ext.rundeckPluginVersion= '2.0'
 ext.rundeckVersion= '${rundeckVersion}'
 ext.pluginClassNames='com.plugin.${sanitizedPluginName}.${javaPluginClass}'
-
 
 repositories {
     mavenLocal()
@@ -40,6 +36,12 @@ dependencies {
     testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
 }
 
+// task to copy plugin libs to output/lib dir
+task copyToLib(type: Copy) {
+    into "\$buildDir/output/lib"
+    from configurations.pluginLibs
+}
+
 jar {
     from "\$buildDir/output"
     manifest {
@@ -50,7 +52,7 @@ jar {
         attributes 'Rundeck-Plugin-Name': '${pluginName}'
         attributes 'Rundeck-Plugin-Description': 'Provide a short description of your plugin here.'
         attributes 'Rundeck-Plugin-Rundeck-Compatibility-Version': '3.x'
-        attributes 'Rundeck-Plugin-Tags': 'java,orchestrator'
+        attributes 'Rundeck-Plugin-Tags': 'java,option'
         attributes 'Rundeck-Plugin-License': 'Apache 2.0'
         attributes 'Rundeck-Plugin-Source-Link': 'Please put the link to your source repo here'
         attributes 'Rundeck-Plugin-Target-Host-Compatibility': 'all'

@@ -34,4 +34,20 @@ class ScriptPluginTemplateGeneratorTest extends Specification {
         new File(destDir,"test-script-plugin/README.md").exists()
 
     }
+
+    def "Generate Option Script Plugin From Template"() {
+        setup:
+        File destDir = File.createTempDir()
+
+        when:
+        ScriptPluginTemplateGenerator generator = new ScriptPluginTemplateGenerator()
+        generator.createTemplate("Option Script Plugin","Option",destDir.absolutePath)
+
+        then:
+        new File(destDir,"option-script-plugin/plugin.yaml").exists()
+        new File(destDir,"option-script-plugin/contents/option").exists()
+        new File(destDir,"option-script-plugin/resources/icon.png").exists()
+        new File(destDir,"option-script-plugin/README.md").exists()
+
+    }
 }

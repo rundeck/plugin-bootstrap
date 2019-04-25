@@ -24,7 +24,7 @@ class JavaPluginTemplateGenerator extends AbstractTemplateGenerator {
     private static final String TEMPLATE_BASE = "templates/java-plugin/"
     private static final String JAVA_STRUCTURE = "java-plugin.structure"
 
-    private static final List ALLOWED_TEMPLATES = ["ResourceModelSource","Notification","WorkflowStep","WorkflowNodeStep","LogFilter","NodeExecutor","Orchestrator"]
+    private static final List ALLOWED_TEMPLATES = ["ResourceModelSource","Notification","WorkflowStep","WorkflowNodeStep","LogFilter","NodeExecutor","Orchestrator","Option"]
 
     @Override
     Map makeTemplateProperties(final String pluginName, final String providedService) {
@@ -51,7 +51,7 @@ class JavaPluginTemplateGenerator extends AbstractTemplateGenerator {
 
     @Override
     void preTemplateValidations(String providedService) {
-        if(!ALLOWED_TEMPLATES.contains(providedService))throw new Exception("Only "+ALLOWED_TEMPLATES.toString()+" plugins generation are supported at this time")
+        if(!ALLOWED_TEMPLATES.contains(providedService))throw new Exception("Java plugin does not support this service : ${providedService}. Only "+ALLOWED_TEMPLATES.toString()+" are supported")
     }
 
     @Override

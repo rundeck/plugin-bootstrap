@@ -117,4 +117,20 @@ class JavaPluginTemplateGeneratorTest extends Specification {
         new File(tmpDir,"/my-nodeexecutor-plugin/src/test/groovy/com/plugin/mynodeexecutorplugin/MyNodeexecutorPluginSpec.groovy").exists()
     }
 
+    def "Create Option Template"() {
+        when:
+        File tmpDir= File.createTempDir()
+        JavaPluginTemplateGenerator generator = new JavaPluginTemplateGenerator()
+        generator.createTemplate("My Option Plugin","Option",tmpDir.absolutePath)
+        int compileResult = TestUtils.buildGradle(new File(tmpDir,"my-option-plugin"))
+
+        then:
+        compileResult == 0
+        new File(tmpDir,"/my-option-plugin/build.gradle").exists()
+        new File(tmpDir,"/my-option-plugin/src/main/resources/resources/icon.png").exists()
+        new File(tmpDir,"/my-option-plugin/README.md").exists()
+        new File(tmpDir,"/my-option-plugin/src/main/java/com/plugin/myoptionplugin/MyOptionPlugin.java").exists()
+        new File(tmpDir,"/my-option-plugin/src/test/groovy/com/plugin/myoptionplugin/MyOptionPluginSpec.groovy").exists()
+    }
+
 }
