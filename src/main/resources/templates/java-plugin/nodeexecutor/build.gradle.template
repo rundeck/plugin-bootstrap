@@ -67,6 +67,7 @@ jar {
         attributes 'Rundeck-Plugin-Libs': "\${libList}"
 
     }
+    dependsOn(copyToLib)
 }
 
 wrapper {

@@ -40,6 +40,12 @@ dependencies {
     testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
 }
 
+// task to copy plugin libs to output/lib dir
+task copyToLib(type: Copy) {
+    into "\$buildDir/output/lib"
+    from configurations.pluginLibs
+}
+
 jar {
     from "\$buildDir/output"
     manifest {
@@ -59,6 +65,7 @@ jar {
         attributes 'Rundeck-Plugin-Libs': "\${libList}"
 
     }
+    dependsOn(copyToLib)
 }
 
 wrapper {
