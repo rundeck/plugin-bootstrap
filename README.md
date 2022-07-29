@@ -94,3 +94,9 @@ rundeck-plugin-bootstrap -n MyUIPlugin -t ui -s UI -d /tmp
 rundeck-plugin-bootstrap -n MyRundeckNotificationPlugin -t java -s Notification -d /tmp
 
 ```
+## Speedy Plugin Development Testing
+
+This repo can be used to test plugins while in development instead of testing through the Rundeck UI running in Development mode, because that can take a while. Instead, this repo can be used to make it faster.
+
+* To begin, you will need to follow the instructions above to create the skeleton of a plugin with the same type as the one in Development.
+* Next, develop tests that can test the functionality of the plugin, by setting all of the properties in the test and executing the step as it normally would be executed. This should resemble the tests you would write at the end of development, but now you are writing them to help confirm development is complete. [Example Tests](https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/blob/master/src/test/groovy/com/dtolabs/rundeck/plugin/resources/ec2/EC2ResourceModelSourceSpec.groovy).
