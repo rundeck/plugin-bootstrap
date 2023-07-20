@@ -18,8 +18,12 @@ package com.rundeck.plugin.generator
 
 class TestUtils {
     static int buildGradle(File baseDir) {
-        Process p = new ProcessBuilder("gradle","build").directory(baseDir).start()
+        ProcessBuilder pb = new ProcessBuilder("gradle", "build")
+        pb.directory(baseDir)
+        pb.redirectErrorStream(true)  // Redirect error stream to standard output
+        Process p = pb.start()
+        p.inputStream.eachLine { println it }  // Print each line of output
         p.waitFor()
-        p.exitValue()
+        return p.exitValue()
     }
 }
