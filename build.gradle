@@ -2,7 +2,7 @@ plugins {
     id 'groovy'
     id 'application'
     id "nebula.ospackage" version "9.1.1"
-    id 'pl.allegro.tech.build.axion-release' version '1.4.1'
+    id 'pl.allegro.tech.build.axion-release' version '1.13.4'
     id 'com.github.johnrengelman.shadow' version '7.1.0'
 
 }
@@ -74,7 +74,7 @@ ospackage {
         into distInstallPath
     }
 
-    def archivedir=shadowDistZip.archiveName - ".${shadowDistZip.extension}"
+    def archivedir=shadowDistZip.archiveFileName.get() - ".${shadowDistZip.archiveExtension.get()}"
 
     //symlink /usr/bin/rd to the rd script
     link("/usr/bin/${applicationName}", "${distInstallPath}/${archivedir}/bin/${applicationName}")
