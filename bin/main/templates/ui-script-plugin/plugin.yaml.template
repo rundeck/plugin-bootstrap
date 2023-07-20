@@ -1,0 +1,25 @@
+name: ${pluginName}
+rundeckPluginVersion: 2.0
+author: Rundeck Dev
+description: Describe your plugin here
+rundeckCompatibilityVersion: 3.x
+targetHostCompatibility: unix
+license: Apache 2.0
+tags:
+    - script
+    - ${providedService}
+date: ${currentDate}
+version: 1.0.0
+providers:
+    - name: ${sanitizedPluginName}
+      service: UI
+      plugin-type: ui
+      title: ${pluginName}
+      description: The description of your plugin
+      ui:
+        - pages: '*'
+          scripts:
+            - js/${sanitizedPluginName}-init.js
+            - js/main.js
+          styles:
+            - css/${sanitizedPluginName}-styles.css

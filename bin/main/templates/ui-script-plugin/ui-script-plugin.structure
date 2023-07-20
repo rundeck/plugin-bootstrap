@@ -1,0 +1,8 @@
+plugin.yaml.template->plugin.yaml
+icon.png->resources/icon.png
+init.js->resources/js/${sanitizedPluginName}-init.js
+main.js->resources/js/main.js
+style.css->resources/css/${sanitizedPluginName}-styles.css
+README.md.template->README.md
+Makefile.template->Makefile
+

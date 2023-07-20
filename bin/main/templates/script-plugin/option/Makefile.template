@@ -1,0 +1,11 @@
+all: install
+
+clean:
+	rm -rf build
+
+build:
+	mkdir -p build/libs build/zip-content/${sanitizedPluginName}
+	cp -r contents resources plugin.yaml build/zip-content/${sanitizedPluginName}
+	cd build/zip-content; zip -r ${sanitizedPluginName}.zip *
+	mv build/zip-content/${sanitizedPluginName}.zip build/libs
+

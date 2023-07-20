@@ -1,0 +1,93 @@
+package com.plugin.${javaPluginClass.toLowerCase()};
+
+import com.dtolabs.rundeck.core.common.INodeSet;
+import com.dtolabs.rundeck.core.common.NodeEntryImpl;
+import com.dtolabs.rundeck.core.common.NodeSetImpl;
+import com.dtolabs.rundeck.core.resources.ResourceModelSource;
+import com.dtolabs.rundeck.core.resources.ResourceModelSourceFactory;
+import com.dtolabs.rundeck.core.plugins.Plugin;
+import com.dtolabs.rundeck.core.plugins.configuration.Describable;
+import com.dtolabs.rundeck.core.plugins.configuration.Description;
+import com.dtolabs.rundeck.core.plugins.configuration.ConfigurationException;
+import com.dtolabs.rundeck.core.plugins.configuration.PropertyUtil;
+import com.dtolabs.rundeck.core.resources.ResourceModelSourceException;
+import com.dtolabs.rundeck.plugins.util.DescriptionBuilder;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Properties;
+
+@Plugin(service="ResourceModelSource",name="${sanitizedPluginName}")
+public class ${javaPluginClass}Factory implements ResourceModelSourceFactory, Describable{
+
+    public static final String PROVIDER_NAME = "${sanitizedPluginName}";
+    public static final String PROVIDER_TITLE = "Test / Resource Model";
+    public static final String PROVIDER_DESCRIPTION ="Test Resource Model ";
+
+
+   /**
+     * Overriding this method gives the plugin a chance to take part in building the {@link
+     * com.dtolabs.rundeck.core.plugins.configuration.Description} presented by this plugin.  This subclass can use the
+     * {@link DescriptionBuilder} to modify all aspects of the description, add or remove properties, etc.
+     */
+    @Override
+    public Description getDescription() {
+        return DescriptionBuilder.builder()
+                           .name(PROVIDER_NAME)
+                           .title(PROVIDER_TITLE)
+                           .description(PROVIDER_DESCRIPTION)
+                           .property(
+                                   PropertyUtil.string("tags", "Custom Tags example", "Custom Tags.", false,
+                                               null,null,null, null
+                                   )
+                               )
+                           .build();
+    }
+
+   /**
+     * Here is the meat of the plugin implementation, which should perform the appropriate logic for your plugin.
+     */
+    @Override
+    public ResourceModelSource createResourceModelSource(final Properties properties) throws ConfigurationException {
+        final ${javaPluginClass} resource = new ${javaPluginClass}(properties);
+        return resource;
+    }
+
+    class ${javaPluginClass} implements ResourceModelSource{
+
+        private final Properties configuration;
+
+        public ${javaPluginClass}(Properties configuration) {
+            this.configuration = configuration;
+        }
+
+        @Override
+        public INodeSet getNodes() throws ResourceModelSourceException {
+
+            String tags=configuration.getProperty("tags");
+
+            final NodeSetImpl nodeSet = new NodeSetImpl();
+
+            NodeEntryImpl node = new NodeEntryImpl();
+
+            if (null == node.getAttributes()) {
+                node.setAttributes(new HashMap<>());
+            }
+
+            node.getAttributes().put("customAttribute", "test");
+
+            node.setHostname("localhost");
+            node.setNodename("localhost");
+            node.setUsername("rundeck");
+
+            HashSet<String> tagset = new HashSet<>();
+            tagset.add(tags);
+            node.setTags(tagset);
+            nodeSet.putNode(node);
+
+            return nodeSet;
+        }
+
+
+    }
+
+}

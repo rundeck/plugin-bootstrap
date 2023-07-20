@@ -1,0 +1,7 @@
+plugin.yaml.template->plugin.yaml
+option.template->contents/option
+icon.png->resources/icon.png
+README.md.template->README.md
+build.gradle.template->build.gradle
+Makefile.template->Makefile
+

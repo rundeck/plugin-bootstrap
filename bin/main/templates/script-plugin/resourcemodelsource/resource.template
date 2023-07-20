@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -eu
+
+#Your script here
+cat <<-END
+{
+  "madmartigan.local": {
+    "tags": "\$RD_CONFIG_CUSTOMTAGS",
+    "osFamily": "unix",
+    "username": "rundeckuser",
+    "osVersion": "10.10.3",
+    "osArch": "x86_64",
+    "description": "Rundeck server node",
+    "hostname": "localhost",
+    "nodename": "madmartigan.local",
+    "osName": "Mac OS X"
+  },
+  "test": {
+    "tags": "\$RD_CONFIG_CUSTOMTAGS",
+    "osFamily": "unix",
+    "ssh-key-storage-path": "keys/testkey1.pem",
+    "username": "vagrant",
+    "osVersion": "10.10.3",
+    "osArch": "x86_64",
+    "description": "Rundeck server node",
+    "hostname": "127.0.0.1",
+    "nodename": "test",
+    "osName": "Mac OS X"
+  }
+}
+END
+

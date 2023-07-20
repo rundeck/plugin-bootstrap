@@ -1,0 +1,58 @@
+package com.plugin.${javaPluginClass.toLowerCase()}
+
+import com.dtolabs.rundeck.plugins.step.PluginStepContext
+import com.dtolabs.rundeck.core.execution.workflow.steps.StepException
+import com.dtolabs.rundeck.plugins.PluginLogger
+import com.dtolabs.rundeck.core.common.INodeEntry
+import spock.lang.Specification
+
+class ${javaPluginClass}Spec extends Specification {
+
+    def getContext(PluginLogger logger){
+        Mock(PluginStepContext){
+            getLogger()>>logger
+        }
+    }
+
+    def "check Boolean parameter"(){
+
+        given:
+
+        def example = new ${javaPluginClass}()
+        def context = getContext(Mock(PluginLogger))
+        def node = Mock(INodeEntry){
+                        getNodename()>>"Test"
+                        getAttributes()>>["attr:name":"Test"]
+                    }
+
+        def configuration = [example:"example123",exampleBoolean:"true"]
+
+        when:
+        example.executeNodeStep(context,configuration,node)
+
+        then:
+        thrown StepException
+    }
+
+    def "run OK"(){
+
+        given:
+
+        def example = new ${javaPluginClass}()
+        def logger = Mock(PluginLogger)
+        def context = getContext(logger)
+        def node = Mock(INodeEntry){
+                        getNodename()>>"Test"
+                        getAttributes()>>["attr:name":"Test"]
+                    }
+
+        def configuration = [example:"example123",exampleBoolean:"false"]
+
+        when:
+        example.executeNodeStep(context,configuration,node)
+
+        then:
+        1 * logger.log(2, "Example node step executing on node: Test")
+    }
+
+}
