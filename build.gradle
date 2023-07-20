@@ -84,7 +84,3 @@ ospackage {
 buildDeb.dependsOn shadowDistZip
 buildRpm.dependsOn shadowDistZip
 assemble.dependsOn buildRpm, buildDeb
-
-wrapper {
-    gradleVersion = '7.2'
-}
