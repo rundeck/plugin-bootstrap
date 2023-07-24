@@ -18,4 +18,4 @@ ext.pluginBaseFolder = "."
 project.version = "0.1.0-SNAPSHOT"
 ext.archiveFilename = ext.archivesBaseName + '-' + version
 
-apply from: 'https://raw.githubusercontent.com/rundeck-plugins/build-zip/master/build.gradle'
+apply from: 'https://raw.githubusercontent.com/rundeck-plugins/build-zip/gradle-5.6/build.gradle'
