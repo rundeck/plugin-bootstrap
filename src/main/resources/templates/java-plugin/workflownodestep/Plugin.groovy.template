@@ -35,7 +35,7 @@ import static com.dtolabs.rundeck.core.plugins.configuration.StringRenderingCons
 
 /**
 * ExampleNodeStepPlugin demonstrates a basic {@link com.dtolabs.rundeck.plugins.step.NodeStepPlugin}, and how to
-* programmatically build all of the plugin's Properties exposed in the Rundeck GUI.
+* programmatically build all of the plugin's Properties exposed in the GUI.
 * <p/>
 * The plugin class is annotated with {@link Plugin} to define the service and name of this service provider plugin.
 * <p/>
@@ -67,11 +67,11 @@ class ${javaPluginClass} implements NodeStepPlugin {
      *     * be laid out at the top of the Plugin class, just after any class/instance variables.
      *     * be intuitive for the user to understand, and inform the end-user what is expected for that field.
      *     * follow the method/conventions of renderingOptions below
-     *     * use KeyStorage for storage/retrieval of secrets. See 'Rundeck API Key Path' property below.
+     *     * use KeyStorage for storage/retrieval of secrets. See 'API Key Path' property below.
      */
     @PluginProperty(
-        title = "Rundeck API URL",
-        description = """Provide the base URL for this Rundeck instance. It will be used by the plugin to get information \
+        title = "API URL",
+        description = """Provide the base URL for the API to connect to. It will be used by the plugin to get information \
 from the API. If left blank, the call will use a default base API URL.\n\n
 When carriage returns are used in the description, any part of the string after them—such as this—will also be collapsed. \
 **Markdown** can also be used in this _expanded_ block.\n\n
@@ -91,7 +91,7 @@ Want to learn more about the Rundeck API? Check out [our docs](https://docs.rund
     * However, the version will need to be a string. So, we'll cast it below.
     */
     @PluginProperty(
-            title = "Rundeck API Version",
+            title = "API Version",
             description = "Overrides the API version used to make the call. If left blank, the call will use a default API version.",
             defaultValue = Constants.API_VERSION,
             required = false
@@ -100,15 +100,15 @@ Want to learn more about the Rundeck API? Check out [our docs](https://docs.rund
     Integer userApiVersion
 
     /**
-    * Here we're requesting the user provides the path to the API key in the Rundeck Key Storage.
+    * Here we're requesting the user provides the path to the API key in Key Storage.
     * For security and accessibility, any secure strings of information should always be saved into Key Storage. That includes
     * tokens, passwords, certificates, or any other authentication information.
     * Here, we're setting up the RenderingOptions to display this as a field for keys of the 'password' type (Rundeck-data-type=password).
     * The value of this property will only be a path to the necessary key. You'll see how the actual key is resolved below.
     */
     @PluginProperty(
-        title = "Rundeck API Key Path",
-        description = "REQUIRED: The path to the Rundeck Key Storage entry for your Rundeck API Key.",
+        title = "API Key Path",
+        description = "REQUIRED: The path to the Key Storage entry for your API Key.",
         required = true
     )
     @RenderingOptions([
@@ -164,7 +164,7 @@ By default, it will be collapsed in the list of properties, thanks to the '@Rend
 
         /**
         * We'll resolve the name of the current project and node. We'll use them to make an
-        * API call to Rundeck itself, and get info about the current node.
+        * API GET request.
         */
         String projectName = context.getFrameworkProject()
         String currentNodeName = entry.getNodename()
@@ -194,7 +194,7 @@ By default, it will be collapsed in the list of properties, thanks to the '@Rend
         * the executionContext log. First, we add to our logging object from before.
         */
         log.add("Here is a single line log entry. We'll print this as a logLevel 2, along with our next log lines.")
-        log.add("Rundeck Plugins use a log level based on the standard syslog model. Here's how it works:")
+        log.add("Plugins use a log level based on the standard syslog model. Here's how it works:")
         log.add(["0": "Error","1": "Warning","2": "Notice","3": "Info","4": "Debug"])
         /**
         * Now that we've added that all to the log, let's print it at logLevel 2, the highest level that
