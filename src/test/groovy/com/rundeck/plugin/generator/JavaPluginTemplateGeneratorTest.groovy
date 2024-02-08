@@ -78,10 +78,11 @@ class JavaPluginTemplateGeneratorTest extends Specification {
 
         then:
         compileResult == 0
+        new File(tmpDir,"/my-workflownodestep-plugin/src/main/groovy/com/plugin/myworkflownodestepplugin/Constants.groovy").exists()
         new File(tmpDir,"/my-workflownodestep-plugin/build.gradle").exists()
         new File(tmpDir,"/my-workflownodestep-plugin/src/main/resources/resources/icon.png").exists()
         new File(tmpDir,"/my-workflownodestep-plugin/README.md").exists()
-        new File(tmpDir,"/my-workflownodestep-plugin/src/main/java/com/plugin/myworkflownodestepplugin/MyWorkflownodestepPlugin.java").exists()
+        new File(tmpDir,"/my-workflownodestep-plugin/src/main/groovy/com/plugin/myworkflownodestepplugin/MyWorkflownodestepPlugin.groovy").exists()
         new File(tmpDir,"/my-workflownodestep-plugin/src/test/groovy/com/plugin/myworkflownodestepplugin/MyWorkflownodestepPluginSpec.groovy").exists()
     }
 
