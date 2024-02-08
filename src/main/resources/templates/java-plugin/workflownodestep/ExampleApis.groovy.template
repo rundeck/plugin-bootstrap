@@ -24,13 +24,13 @@ class ExampleApis {
             .build()
 
         if (!userBaseApiUrl) {
-            userRundeckBaseApiUrl = ExampleConstants.BASE_API_URL
+            userRundeckBaseApiUrl = Constants.BASE_API_URL
         } else {
             userRundeckBaseApiUrl = userBaseApiUrl
         }
 
         if (!userApiVersion) {
-            userRundeckApiVersion = ExampleConstants.API_VERSION
+            userRundeckApiVersion = Constants.API_VERSION
         } else {
             userRundeckApiVersion = userApiVersion
         }
@@ -77,9 +77,12 @@ class ExampleApis {
         }
     }
 
-// Handle for user query path inconsistencies
     private static String createFullUrl(String baseApiUrl, String apiVersion, String apiPath) {
-        String correctedBaseUrl = baseApiUrl.replaceAll('/', "")
-        return correctedBaseUrl + "/" + apiVersion + apiPath
+
+        // Handle for user trailing forward slash
+        if(baseApiUrl.endsWith("/")) {
+            baseApiUrl = baseApiUrl.substring(0, baseApiUrl.length() - 1)
+        }
+        return baseApiUrl + "/" + apiVersion + "/" + apiPath
     }
 }

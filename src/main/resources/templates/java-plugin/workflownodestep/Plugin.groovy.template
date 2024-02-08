@@ -60,7 +60,7 @@ class ${javaPluginClass} implements NodeStepPlugin {
     * meta - Holds any metadata for use when the log is printed. Usually will just contain the
     *        content type of the log data ("application/json")
     */
-    ExecutionListener log = context.getExecutionContext().getExecutionListener()
+
     Map<String, String> meta = Collections.singletonMap("content-data-type", "application/json")
     ExampleApis exapis
 
@@ -183,7 +183,7 @@ By default, it will be collapsed in the list of properties, thanks to the '@Rend
         } catch (StorageException e) {
             throw new NodeStepException(
                 'Error accessing ${apiKeyPath}:' + e.getMessage(),
-                FailureReason.KeyStorageError,
+                PluginFailureReason.KeyStorageError,
                 entry.getNodename()
             )
         }
@@ -192,8 +192,11 @@ By default, it will be collapsed in the list of properties, thanks to the '@Rend
         * The preferred method of logging is to write into, and then print out,
         * the executionContext log. First, we add to our logging object from before.
         */
+        ExecutionListener logger = context.getExecutionContext().getExecutionListener()
+
         logger.log(3, "Here is a single line log entry. We'll print this as a logLevel 2, along with our next log lines.")
         logger.log(3, "Plugins use a log level based on the standard syslog model. Here's how it works:")
+        //Note that log levels 3 and 4 are only visible in the GUI if the user has selected the 'Run with Debug Output' option.
         logger.log(3, '["0": "Error","1": "Warning","2": "Notice","3": "Info","4": "Debug"]')
 
         /** Cast the API Version, if it was provided */
@@ -213,7 +216,7 @@ By default, it will be collapsed in the list of properties, thanks to the '@Rend
         } catch (IOException e) {
             throw new NodeStepException(
                 'Failed to get resource info with error:' + e.getMessage(),
-                FailureReason.ResourceInfoError,
+                PluginFailureReason.ResourceInfoError,
                 entry.getNodename()
             )
         }
@@ -230,7 +233,7 @@ By default, it will be collapsed in the list of properties, thanks to the '@Rend
         context.getExecutionContext().getOutputContext().addOutput("extra", "hiddenTestValue", hiddenTestValue)
 
         /** Now, we'll add it to the log, print for the user, and call it a day. */
-        logger.log(3, "Job run complete! Results from API call:")
+        logger.log(2, "Job run complete! Results from API call:")
 
         def Json = JsonOutput.toJson(resourceInfo)
         logger.log(2, Json, meta)

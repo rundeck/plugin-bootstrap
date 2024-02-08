@@ -9,7 +9,7 @@ import com.dtolabs.rundeck.core.execution.workflow.steps.FailureReason
  * There should regularly be failure reasons for Authentication errors, Key Storage errors, etc.
  * Use these to represent reasons your plugin may fail to execute.
  */
-enum FailureReason implements FailureReason {
+enum PluginFailureReason implements FailureReason {
     KeyStorageError,
     ResourceInfoError
 }

@@ -11,7 +11,7 @@ apply plugin: 'idea'
 sourceCompatibility = 1.8
 ext.rundeckPluginVersion= '2.0'
 ext.rundeckVersion= '${rundeckVersion}'
-ext.pluginClassNames='com.plugin.${sanitizedPluginName}.${javaPluginClass}'
+ext.pluginClassNames='com.plugin.${javaPluginClass.toLowerCase()}.${javaPluginClass}'
 
 
 repositories {
