@@ -7,22 +7,20 @@ package com.plugin.${javaPluginClass.toLowerCase()};
  * have an open source license such as Apache-2 or MIT.
  */
 
-import com.dtolabs.rundeck.core.common.INodeEntry
-import com.dtolabs.rundeck.core.execution.workflow.steps.node.NodeStepException
 import com.dtolabs.rundeck.core.plugins.Plugin
+import com.dtolabs.rundeck.plugins.step.StepPlugin
+import com.dtolabs.rundeck.core.execution.workflow.steps.StepException
 import com.dtolabs.rundeck.core.plugins.configuration.StringRenderingConstants
 import com.dtolabs.rundeck.plugins.ServiceNameConstants
-import com.dtolabs.rundeck.plugins.step.NodeStepPlugin
 import com.dtolabs.rundeck.plugins.step.PluginStepContext
 import com.dtolabs.rundeck.plugins.descriptions.PluginDescription
 import com.dtolabs.rundeck.plugins.descriptions.PluginProperty
 import com.dtolabs.rundeck.plugins.descriptions.RenderingOption
 import com.dtolabs.rundeck.plugins.descriptions.RenderingOptions
+import com.dtolabs.rundeck.core.execution.ExecutionListener
 import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
 import org.rundeck.storage.api.StorageException
-import com.dtolabs.rundeck.core.execution.ExecutionListener
-
 
 /**
  * If other functions are required for purposes of modularity or clarity, they should either be added to a Util Class
@@ -44,15 +42,15 @@ import static com.dtolabs.rundeck.core.plugins.configuration.StringRenderingCons
 * The provider name of this plugin is statically defined in the class. The service name makes use of {@link
 * ServiceNameConstants} to provide the known Rundeck service names.
 */
-@Plugin(name = PLUGIN_NAME, service = ServiceNameConstants.WorkflowNodeStep)
+@Plugin(name = PLUGIN_NAME, service = ServiceNameConstants.WorkflowStep)
 @PluginDescription(title = PLUGIN_TITLE, description = PLUGIN_DESCRIPTION)
-class ${javaPluginClass} implements NodeStepPlugin {
+class ${javaPluginClass} implements StepPlugin {
     /**
      * Define a name used to identify your plugin. It is a good idea to use a fully qualified package-style name.
      */
     public static final String PLUGIN_NAME = "${sanitizedPluginName}"
     public static final String PLUGIN_TITLE = "${pluginName}"
-    public static final String PLUGIN_DESCRIPTION = "Template Node Step plugin that makes a call to an API and retrieves a response."
+    public static final String PLUGIN_DESCRIPTION = "Template Workflow Step plugin that makes a call to an API and retrieves a response."
 
     /** Sets up the logging and meta objects for use during execution.
     * log  - We'll add objects to it as the step executes, and then print them and clear the log
@@ -146,30 +144,28 @@ By default, it will be collapsed in the list of properties, thanks to the '@Rend
     String hiddenTestValue
 
     /**
-     * In the main NodeStepPlugin class, executeNodeStep() should be the only method.
+     * In the Plugin class (this file) we try to limit executeStep() to be the only method.
      * Any other methods supporting the execution should be in another supporting class.
      *
      * Plugins should make good use of logging and log levels in order to provide the user with the right amount
      * of information on execution. Use 'context.getExecutionContext().getExecutionListener().log' to handle logging.
      *
-     * Any failure in the execution should be caught and thrown as a NodeStepException
-     * NodeStepExceptions require a message, FailureReason, and node name to be provided
+     * Any failure in the execution should be caught and thrown as a StepException
+     * StepExceptions require a message, FailureReason to be provided
      * @param context
      * @param configuration
      * @param entry
-     * @throws NodeStepException
+     * @throws StepException
      */
     @Override
-    void executeNodeStep(final PluginStepContext context,
-                                final Map<String, Object> configuration,
-                                final INodeEntry entry) throws NodeStepException {
+    void executeStep(final PluginStepContext context,
+                                final Map<String, Object> configuration) {
 
         /**
-        * We'll resolve the name of the current project and node. We'll use them to make an
+        * We'll resolve the name of the current project. We'll use them to make an
         * API GET request.
         */
         String projectName = context.getFrameworkProject()
-        String currentNodeName = entry.getNodename()
         String resourceInfo
         String userApiVersionString = null
         String userApiKey
@@ -181,10 +177,9 @@ By default, it will be collapsed in the list of properties, thanks to the '@Rend
         try {
             userApiKey = Util.getPasswordFromKeyStorage(apiKeyPath, context)
         } catch (StorageException e) {
-            throw new NodeStepException(
+            throw new StepException(
                 'Error accessing ${apiKeyPath}:' + e.getMessage(),
-                FailureReason.KeyStorageError,
-                entry.getNodename()
+                FailureReason.KeyStorageError
             )
         }
 
@@ -192,7 +187,7 @@ By default, it will be collapsed in the list of properties, thanks to the '@Rend
         * The preferred method of logging is to write into, and then print out,
         * the executionContext log. First, we add to our logging object from before.
         */
-        logger.log(3, "Here is a single line log entry. We'll print this as a logLevel 2, along with our next log lines.")
+        logger.log(3, "Here is a single line log entry. We'll print this as a logLevel 3, along with our next log lines.")
         logger.log(3, "Plugins use a log level based on the standard syslog model. Here's how it works:")
         logger.log(3, '["0": "Error","1": "Warning","2": "Notice","3": "Info","4": "Debug"]')
 
@@ -209,12 +204,11 @@ By default, it will be collapsed in the list of properties, thanks to the '@Rend
             if (!exapis) {
                 exapis = new ExampleApis(userBaseApiUrl, userApiVersionString, userApiKey)
             }
-            resourceInfo = exapis.getResourceInfoByName(projectName, currentNodeName)
+            projectInfo = exapis.getProjectInfoByName(projectName)
         } catch (IOException e) {
-            throw new NodeStepException(
+            throw new StepException(
                 'Failed to get resource info with error:' + e.getMessage(),
-                FailureReason.ResourceInfoError,
-                entry.getNodename()
+                FailureReason.ResourceInfoError
             )
         }
 
@@ -222,8 +216,8 @@ By default, it will be collapsed in the list of properties, thanks to the '@Rend
         * At this point, if we haven't failed, we have our result data in hand with resourceInfo.
         * Let's save it to outputContext, which will allow the job runner to pass the results
         * to another job step automatically by the context name.
-        * In this instance, the resource information in 'resourceInfo' can be interpolated into any subsequent job steps by
-        * using '${data}.${resourceInfo}'.
+        * In this instance, the resource information in 'projectInfo' can be interpolated into any subsequent job steps by
+        * using '${data}.${projectInfo}'.
         */
         context.getExecutionContext().getOutputContext().addOutput("data", "resourceInfo", resourceInfo)
         /** Here, we'll get access to 'hiddenTestValue' via '${extra}.${hiddenTestValue}' */
@@ -232,8 +226,8 @@ By default, it will be collapsed in the list of properties, thanks to the '@Rend
         /** Now, we'll add it to the log, print for the user, and call it a day. */
         logger.log(3, "Job run complete! Results from API call:")
 
-        def Json = JsonOutput.toJson(resourceInfo)
-        logger.log(2, Json, meta)
+        def json = Jsonoutput.toJson(resourceInfo)
+        logger.log(3, json, meta)
 
     }
 }

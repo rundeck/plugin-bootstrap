@@ -65,7 +65,7 @@ class JavaPluginTemplateGeneratorTest extends Specification {
         new File(tmpDir,"/my-workflowstep-plugin/build.gradle").exists()
         new File(tmpDir,"/my-workflowstep-plugin/src/main/resources/resources/icon.png").exists()
         new File(tmpDir,"/my-workflowstep-plugin/README.md").exists()
-        new File(tmpDir,"/my-workflowstep-plugin/src/main/java/com/plugin/myworkflowstepplugin/MyWorkflowstepPlugin.java").exists()
+        new File(tmpDir,"/my-workflowstep-plugin/src/main/groovy/com/plugin/myworkflowstepplugin/MyWorkflowstepPlugin.groovy").exists()
         new File(tmpDir,"/my-workflowstep-plugin/src/test/groovy/com/plugin/myworkflowstepplugin/MyWorkflowstepPluginSpec.groovy").exists()
     }
 

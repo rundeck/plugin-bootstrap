@@ -30,7 +30,7 @@ configurations{
 }
 
 dependencies {
-    implementation 'org.rundeck:rundeck-core:4.14.2-20230713'
+    implementation 'org.rundeck:rundeck-core:${rundeckVersion}'
     implementation 'org.codehaus.groovy:groovy-all:3.0.9'
 
     //use pluginLibs to add dependecies, example:
