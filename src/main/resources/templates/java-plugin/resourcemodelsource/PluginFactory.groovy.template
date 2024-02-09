@@ -1,0 +1,45 @@
+package com.plugin.${javaPluginClass.toLowerCase()};
+
+import com.dtolabs.rundeck.core.resources.ResourceModelSource;
+import com.dtolabs.rundeck.core.resources.ResourceModelSourceFactory;
+import com.dtolabs.rundeck.plugins.ServiceNameConstants
+import com.dtolabs.rundeck.core.plugins.Plugin;
+import com.dtolabs.rundeck.core.plugins.configuration.Description;
+import com.dtolabs.rundeck.plugins.descriptions.PluginDescription
+import com.dtolabs.rundeck.plugins.descriptions.PluginProperty
+import com.dtolabs.rundeck.plugins.descriptions.RenderingOption
+import com.dtolabs.rundeck.plugins.descriptions.RenderingOptions
+import com.dtolabs.rundeck.core.plugins.configuration.ConfigurationException;
+import com.dtolabs.rundeck.core.plugins.configuration.PropertyUtil;
+import com.dtolabs.rundeck.plugins.util.DescriptionBuilder;
+import static com.dtolabs.rundeck.core.plugins.configuration.StringRenderingConstants.GROUP_NAME
+
+@Plugin(name = ${javaPluginClass}Factory.PLUGIN_NAME, service=ServiceNameConstants.ResourceModelSource)
+@PluginDescription(title = ${javaPluginClass}Factory.PLUGIN_TITLE, description = ${javaPluginClass}Factory.PLUGIN_DESCRIPTION)
+public class ${javaPluginClass}Factory implements ResourceModelSourceFactory {
+
+    public static final String PLUGIN_NAME = "${sanitizedPluginName}"
+    public static final String PLUGIN_TITLE = "${pluginName}"
+    public static final String PLUGIN_DESCRIPTION = "Test Resource Model";
+
+    /**
+     * Overriding this method gives the plugin a chance to take part in building the {@link
+     * com.dtolabs.rundeck.core.plugins.configuration.Description} presented by this plugin.  This subclass can use the
+     * {@link DescriptionBuilder} to modify all aspects of the description, add or remove properties, etc.
+     */
+     @PluginProperty(
+                 title = "Tags",
+                 description = "Custom Tags example.",
+                 defaultValue = "custom tags",
+                 required = false
+         )
+         @RenderingOption(key = GROUP_NAME, value = "Configuration")
+         String tags
+
+    @Override
+    public ResourceModelSource createResourceModelSource(final Properties properties) throws ConfigurationException {
+        final ${javaPluginClass} resource = new ${javaPluginClass}(properties);
+        return resource;
+    }
+
+}

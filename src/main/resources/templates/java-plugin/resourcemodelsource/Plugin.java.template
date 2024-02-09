@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Properties;
 
-@Plugin(service="ResourceModelSource",name="${sanitizedPluginName}")
+@Plugin(service="ResourceModelSource",name=PROVIDER_NAME)
 public class ${javaPluginClass}Factory implements ResourceModelSourceFactory, Describable{
 
     public static final String PROVIDER_NAME = "${sanitizedPluginName}";

@@ -13,7 +13,7 @@ class ${javaPluginClass}FactorySpec extends Specification {
 
         def factory = new ${javaPluginClass}Factory()
 
-        def vmList = ["localhost"]
+        def vmList = ["node1","node2","node3"]
 
         when:
         def result = factory.createResourceModelSource(configuration)

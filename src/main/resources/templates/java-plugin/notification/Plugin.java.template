@@ -14,6 +14,9 @@ public class ${javaPluginClass} implements NotificationPlugin{
     private String example;
 
     public boolean postNotification(String trigger, Map executionData, Map config) {
+
+        //implement your notification here. Rundeck will call this plugin if configured for onStart, onSuccess, onFailure, etc.
+
         System.err.printf("Trigger %s fired for %s, configuration: %s",trigger,executionData,config);
         System.err.println();
         System.err.printf("Local field example is: %s",example);
