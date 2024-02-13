@@ -5,21 +5,32 @@ import com.dtolabs.rundeck.core.common.NodeEntryImpl
 import com.dtolabs.rundeck.core.common.NodeSetImpl
 import com.dtolabs.rundeck.core.resources.ResourceModelSource
 import com.dtolabs.rundeck.core.resources.ResourceModelSourceException
+import com.dtolabs.rundeck.core.storage.keys.KeyStorageTree
+import org.rundeck.app.spi.Services
 
 import groovy.json.JsonSlurper
 
 class ${javaPluginClass} implements ResourceModelSource{
 
-    private final Properties configuration;
+    //Properties object to hold the configuration from the plugin properties
+    //Services object used for retrieving secrets from KeyStorage
+    Properties configuration;
+    Services services;
 
-    public ${javaPluginClass}(Properties configuration) {
+    public ${javaPluginClass}(Properties configuration, Services services) {
         this.configuration = configuration;
+        this.services = services
     }
 
     @Override
     public INodeSet getNodes() throws ResourceModelSourceException {
 
         String tags=configuration.getProperty("tags");
+
+        //Optional: if a secret was needed from KeyStorage, it would be retrieved like this:
+        KeyStorageTree keyStorage = services.getService(KeyStorageTree.class)
+        String apiKeyPath = configuration.getProperty("apiKeyPath")
+        String apiKey = Util.getPasswordFromKeyStorage(apiKeyPath, keyStorage)
 
         //This is the object for the collection of nodes
         final NodeSetImpl nodeSet = new NodeSetImpl();

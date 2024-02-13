@@ -30,7 +30,7 @@ class JavaPluginTemplateGeneratorTest extends Specification {
         new File(tmpDir,"/my-great-plugin/build.gradle").exists()
         new File(tmpDir,"/my-great-plugin/src/main/resources/resources/icon.png").exists()
         new File(tmpDir,"/my-great-plugin/README.md").exists()
-        new File(tmpDir,"/my-great-plugin/src/main/java/com/plugin/mygreatplugin/MyGreatPlugin.java").exists()
+        new File(tmpDir,"/my-great-plugin/src/main/groovy/com/plugin/mygreatplugin/MyGreatPlugin.groovy").exists()
         new File(tmpDir,"/my-great-plugin/src/test/groovy/com/plugin/mygreatplugin/MyGreatPluginSpec.groovy").exists()
 
     }

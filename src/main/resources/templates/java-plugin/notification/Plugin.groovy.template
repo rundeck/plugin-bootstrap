@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory
 @PluginDescription(title="${pluginName}", description="This is a notification plugin that integrated with ${pluginName}.")
 public class ${javaPluginClass} implements NotificationPlugin {
 
-    static Logger logger = LoggerFactory.getLogger(Notificationplugin.class);
+    static Logger logger = LoggerFactory.getLogger(${javaPluginClass}.class);
 
     @PluginProperty(name = "test" ,title = "Test String", description = "a description")
     String test;
