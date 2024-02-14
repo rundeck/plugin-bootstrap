@@ -8,7 +8,7 @@ defaultTasks 'clean','build'
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'idea'
-sourceCompatibility = 1.8
+sourceCompatibility = 11.0
 ext.rundeckPluginVersion= '2.0'
 ext.rundeckVersion= '${rundeckVersion}'
 ext.pluginClassNames='com.plugin.${javaPluginClass.toLowerCase()}.${javaPluginClass}'
@@ -30,10 +30,10 @@ configurations{
 }
 
 dependencies {
-    implementation 'org.rundeck:rundeck-core:4.14.2-20230713'
+    implementation 'org.rundeck:rundeck-core:${rundeckVersion}'
     implementation 'org.codehaus.groovy:groovy-all:2.4.21'
 
-    //use pluginLibs to add dependecies, example:
+    //use pluginLibs to add dependencies, example:
 
     testImplementation 'junit:junit:4.12'
     testImplementation "org.codehaus.groovy:groovy-all:2.4.15"

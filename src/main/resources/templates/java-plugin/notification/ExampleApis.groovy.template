@@ -5,20 +5,39 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.RequestBody
+import okhttp3.Credentials;
 
-class apiCall {
 
+class ExampleApis {
+
+    Properties configuration;
+
+    //Set constructor to use configuration from plugin properties
+    ExampleApis(Properties configuration) {
+        this.configuration = configuration;
+    }
+
+    //Pass the customProperty from the plugin config to the JSON string that we'll pass to the API call
+    private String json = '{"name":"' + configuration.getProperty("customProperty") + '"}';
+
+    //Set the media type for the API call request body
     public static final MediaType JSON = MediaType.get("application/json");
 
+    //Create a new OkHttpClient
     OkHttpClient client = new OkHttpClient();
 
-    String post(String json) throws IOException {
+    //Post method that takes the API Key as an argument
+    String post(String apiKey) throws IOException {
+
+        //Create a basic authentication credential
+        String credential = Credentials.basic("name", apiKey);
 
         RequestBody body = RequestBody.create(JSON, json);
 
         Request request = new Request.Builder()
                 .url("https://httpbin.org/post")
                 .post(body)
+                .header("Authorization", credential)
                 .build();
 
         Response response = null
@@ -30,5 +49,4 @@ class apiCall {
             response.close();
         }
     }
-
 }

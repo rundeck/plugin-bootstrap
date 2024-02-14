@@ -1,24 +1,72 @@
 package com.plugin.${javaPluginClass.toLowerCase()};
 
 import com.dtolabs.rundeck.core.plugins.Plugin
+import com.dtolabs.rundeck.core.plugins.configuration.AcceptsServices
+import com.dtolabs.rundeck.core.storage.StorageTree
 import com.dtolabs.rundeck.plugins.descriptions.PluginDescription
 import com.dtolabs.rundeck.plugins.descriptions.PluginProperty
 import com.dtolabs.rundeck.plugins.notification.NotificationPlugin
+import com.dtolabs.rundeck.plugins.descriptions.RenderingOption
+import com.dtolabs.rundeck.plugins.descriptions.RenderingOptions
+import com.dtolabs.rundeck.core.plugins.configuration.StringRenderingConstants
+import com.dtolabs.rundeck.core.storage.keys.KeyStorageTree
+import org.rundeck.app.spi.Services
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 @Plugin(service="Notification", name="${sanitizedPluginName}")
 @PluginDescription(title="${pluginName}", description="This is a notification plugin that integrated with ${pluginName}.")
-public class ${javaPluginClass} implements NotificationPlugin {
+public class ${javaPluginClass} implements NotificationPlugin, AcceptsServices {
 
     static Logger logger = LoggerFactory.getLogger(${javaPluginClass}.class);
 
-    @PluginProperty(name = "test" ,title = "Test String", description = "a description")
-    String test;
+    @PluginProperty(name = "customProperty" ,title = "Custom Property", description = "A custom property to be passed to the API.")
+    String customProperty;
+
+    @PluginProperty(
+            title = "API Key Path",
+            description = 'REQUIRED: The path to the Key Storage entry for your API Key.\\n If an error of `Unauthorized` occurs, be sure to add the proper policy to ACLs.',
+            required = true
+    )
+    @RenderingOptions([
+            @RenderingOption(
+                    key = StringRenderingConstants.SELECTION_ACCESSOR_KEY,
+                    value = "STORAGE_PATH"
+            ),
+            @RenderingOption(
+                    key = StringRenderingConstants.STORAGE_PATH_ROOT_KEY,
+                    value = "keys"
+            ),
+            @RenderingOption(
+                    key = StringRenderingConstants.STORAGE_FILE_META_FILTER_KEY,
+                    value = "Rundeck-data-type=password"
+            ),
+            @RenderingOption(
+                    key = StringRenderingConstants.GROUP_NAME,
+                    value = "API Configuration"
+            )
+    ])
+    String apiKeyPath
+
+
+    //Implement services so that we can retrieve secret from key storage and pass to API call
+    Services services
+    @Override
+    void setServices(Services services) {
+        this.services = services
+    }
 
     public boolean postNotification(String trigger, Map executionData, Map config) {
 
-        logger.info(new apiCall().post("{\"key\":\"value\"}"))
+        //Get the secret from the key storage
+        StorageTree keyStorage = services.getService(KeyStorageTree)
+        String apiKeyPath = config.get("apiKeyPath")
+        String apiKey = Util.getPasswordFromKeyStorage(apiKeyPath, keyStorage)
+
+        //Pass in config properties to the API so that secret can be used in api call
+        ExampleApis api = new ExampleApis(config as Properties);
+
+        logger.warn(api.post(apiKey))
 
         return true;
     }

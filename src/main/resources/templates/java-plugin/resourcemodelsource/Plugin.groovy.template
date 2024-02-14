@@ -46,6 +46,7 @@ class ${javaPluginClass} implements ResourceModelSource{
             }
         '''
 
+        //Parse the JSON and then loop through them to add them and their properties to the NodeSet
         def parser = new JsonSlurper()
         def jsonNodes = parser.parseText(nodes)
 

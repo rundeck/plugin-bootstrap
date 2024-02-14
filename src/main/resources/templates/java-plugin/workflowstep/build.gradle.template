@@ -8,7 +8,7 @@ defaultTasks 'clean','build'
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'idea'
-sourceCompatibility = 1.8
+sourceCompatibility = 11.0
 ext.rundeckPluginVersion= '2.0'
 ext.rundeckVersion= '${rundeckVersion}'
 ext.pluginClassNames='com.plugin.${javaPluginClass.toLowerCase()}.${javaPluginClass}'

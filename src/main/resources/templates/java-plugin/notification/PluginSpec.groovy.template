@@ -1,6 +1,11 @@
 package com.plugin.${javaPluginClass.toLowerCase()}
 
 import spock.lang.Specification
+import spock.lang.Specification
+import org.rundeck.app.spi.Services
+import org.rundeck.storage.api.Resource
+import com.dtolabs.rundeck.core.storage.ResourceMeta
+import com.dtolabs.rundeck.core.storage.keys.KeyStorageTree
 
 class ${javaPluginClass}Spec extends Specification {
     //Some Possible trigger names
@@ -38,9 +43,23 @@ class ${javaPluginClass}Spec extends Specification {
         String trigger = TRIGGER_SUCCESS
 
         def executionData = sampleExecutionData()
-        def configuration = [:]
+        def configuration = [apiKeyPath:"keys/apiKey"]
 
         //TODO: add mock implementations of any objects which your plugin uses, such as HTTP clients, etc.
+        def storageTree = Mock(KeyStorageTree)
+                storageTree.getResource(_) >> Mock(Resource) {
+                    getContents() >> Mock(ResourceMeta) {
+                        writeContent(_) >> { args ->
+                            args[0].write('password'.bytes)
+                            return 6L
+                        }
+                    }
+                }
+                def services = Mock(Services) {
+                    getService(KeyStorageTree.class) >> storageTree
+                }
+
+        plugin.setServices(services)
 
         when:
 
