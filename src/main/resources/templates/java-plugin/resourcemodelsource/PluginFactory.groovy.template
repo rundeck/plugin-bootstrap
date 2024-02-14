@@ -1,0 +1,81 @@
+package com.plugin.${javaPluginClass.toLowerCase()};
+
+import com.dtolabs.rundeck.core.resources.ResourceModelSource;
+import com.dtolabs.rundeck.core.resources.ResourceModelSourceFactory;
+import com.dtolabs.rundeck.plugins.ServiceNameConstants
+import com.dtolabs.rundeck.core.plugins.Plugin;
+import com.dtolabs.rundeck.core.plugins.configuration.Description;
+import com.dtolabs.rundeck.plugins.descriptions.PluginDescription
+import com.dtolabs.rundeck.plugins.descriptions.PluginProperty
+import com.dtolabs.rundeck.plugins.descriptions.RenderingOption
+import com.dtolabs.rundeck.plugins.descriptions.RenderingOptions
+import com.dtolabs.rundeck.core.plugins.configuration.StringRenderingConstants
+import com.dtolabs.rundeck.core.plugins.configuration.ConfigurationException;
+import com.dtolabs.rundeck.core.plugins.configuration.PropertyUtil;
+import com.dtolabs.rundeck.plugins.util.DescriptionBuilder;
+import org.rundeck.app.spi.Services
+import static com.dtolabs.rundeck.core.plugins.configuration.StringRenderingConstants.GROUP_NAME
+
+@Plugin(name = ${javaPluginClass}Factory.PLUGIN_NAME, service=ServiceNameConstants.ResourceModelSource)
+@PluginDescription(title = ${javaPluginClass}Factory.PLUGIN_TITLE, description = ${javaPluginClass}Factory.PLUGIN_DESCRIPTION)
+public class ${javaPluginClass}Factory implements ResourceModelSourceFactory {
+
+    public static final String PLUGIN_NAME = "${sanitizedPluginName}"
+    public static final String PLUGIN_TITLE = "${pluginName}"
+    public static final String PLUGIN_DESCRIPTION = "Test Resource Model";
+
+    /**
+     * Overriding this method gives the plugin a chance to take part in building the {@link
+     * com.dtolabs.rundeck.core.plugins.configuration.Description} presented by this plugin.  This subclass can use the
+     * {@link DescriptionBuilder} to modify all aspects of the description, add or remove properties, etc.
+     */
+     @PluginProperty(
+                 title = "Tags",
+                 description = "Custom Tags example.",
+                 defaultValue = "custom tags",
+                 required = false
+     )
+         @RenderingOption(key = GROUP_NAME, value = "Configuration")
+         String tags
+
+     @PluginProperty(
+             title = "API Key Path",
+             description = 'REQUIRED: The path to the Key Storage entry for your API Key.\\n If an error of `Unauthorized` occurs, be sure to add the proper policy to ACLs.',
+             required = true
+     )
+         @RenderingOptions([
+             @RenderingOption(
+                 key = StringRenderingConstants.SELECTION_ACCESSOR_KEY,
+                 value = "STORAGE_PATH"
+             ),
+             @RenderingOption(
+                 key = StringRenderingConstants.STORAGE_PATH_ROOT_KEY,
+                 value = "keys"
+             ),
+             @RenderingOption(
+                 key = StringRenderingConstants.STORAGE_FILE_META_FILTER_KEY,
+                 value = "Rundeck-data-type=password"
+             ),
+             @RenderingOption(
+                 key = StringRenderingConstants.GROUP_NAME,
+                 value = "API Configuration"
+             )
+         ])
+         String apiKeyPath
+
+    @Override
+    ResourceModelSource createResourceModelSource(Properties configuration) throws ConfigurationException {
+
+        //We implement this method with just the Properties input because it is required by the interface, but we don't use it.
+        //Instead, we use the other method that receives a Services object, which is the one that we need to use in order to access the Key Storage service.
+        null
+    }
+
+    @Override
+    ResourceModelSource createResourceModelSource(Services services, Properties properties) throws ConfigurationException {
+
+        def resource = new ${javaPluginClass}(properties, services)
+        return resource;
+    }
+
+}

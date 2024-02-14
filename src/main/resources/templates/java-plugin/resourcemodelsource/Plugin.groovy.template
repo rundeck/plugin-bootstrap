@@ -1,0 +1,74 @@
+package com.plugin.${javaPluginClass.toLowerCase()};
+
+import com.dtolabs.rundeck.core.common.INodeSet
+import com.dtolabs.rundeck.core.common.NodeEntryImpl
+import com.dtolabs.rundeck.core.common.NodeSetImpl
+import com.dtolabs.rundeck.core.resources.ResourceModelSource
+import com.dtolabs.rundeck.core.resources.ResourceModelSourceException
+import com.dtolabs.rundeck.core.storage.keys.KeyStorageTree
+import org.rundeck.app.spi.Services
+
+import groovy.json.JsonSlurper
+
+class ${javaPluginClass} implements ResourceModelSource{
+
+    //Properties object to hold the configuration from the plugin properties
+    //Services object used for retrieving secrets from KeyStorage
+    Properties configuration;
+    Services services;
+
+    public ${javaPluginClass}(Properties configuration, Services services) {
+        this.configuration = configuration;
+        this.services = services
+    }
+
+    @Override
+    public INodeSet getNodes() throws ResourceModelSourceException {
+
+        String tags=configuration.getProperty("tags");
+
+        //Optional: if a secret was needed from KeyStorage, it would be retrieved like this:
+        KeyStorageTree keyStorage = services.getService(KeyStorageTree.class)
+        String apiKeyPath = configuration.getProperty("apiKeyPath")
+        String apiKey = Util.getPasswordFromKeyStorage(apiKeyPath, keyStorage)
+
+        //This is the object for the collection of nodes
+        final NodeSetImpl nodeSet = new NodeSetImpl();
+
+        //Let's say we have a collection of nodes returned to us from an API call or other source:
+        String nodes = '''
+            {"nodes":
+                [
+                    {"name":"host1","hostname":"10.0.0.1","properties":[{"username":"rundeck","os":"windows"}]},
+                    {"name":"host2","hostname":"10.0.0.2","properties":[{"username":"rundeck","os":"linux"}]},
+                    {"name":"host3","hostname":"10.0.0.3","properties":[{"username":"rundeck","os":"linux"}]}
+                ]
+            }
+        '''
+
+        //Parse the JSON and then loop through them to add them and their properties to the NodeSet
+        def parser = new JsonSlurper()
+        def jsonNodes = parser.parseText(nodes)
+
+        for (node in jsonNodes["nodes"]) {
+
+            NodeEntryImpl nodeEntry = new NodeEntryImpl();
+
+            //Set the node name and hostname
+            nodeEntry.setNodename(node["name"] as String)
+            nodeEntry.setHostname(node["hostname"] as String)
+
+            nodeEntry.setAttribute("username", node.properties[0]["username"] as String)
+            nodeEntry.setAttribute("os", node.properties[0]["os"] as String)
+
+            //Set the tags from the configuration property
+            HashSet<String> tagset = new HashSet<>();
+            tagset.add(tags);
+            nodeEntry.setTags(tagset);
+
+            nodeSet.putNode(nodeEntry);
+        }
+
+        return nodeSet;
+    }
+}
