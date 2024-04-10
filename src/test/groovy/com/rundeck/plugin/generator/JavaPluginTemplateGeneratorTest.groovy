@@ -114,7 +114,7 @@ class JavaPluginTemplateGeneratorTest extends Specification {
         new File(tmpDir,"/my-nodeexecutor-plugin/build.gradle").exists()
         new File(tmpDir,"/my-nodeexecutor-plugin/src/main/resources/resources/icon.png").exists()
         new File(tmpDir,"/my-nodeexecutor-plugin/README.md").exists()
-        new File(tmpDir,"/my-nodeexecutor-plugin/src/main/java/com/plugin/mynodeexecutorplugin/MyNodeexecutorPlugin.java").exists()
+        new File(tmpDir,"/my-nodeexecutor-plugin/src/main/groovy/com/plugin/mynodeexecutorplugin/MyNodeexecutorPlugin.groovy").exists()
         new File(tmpDir,"/my-nodeexecutor-plugin/src/test/groovy/com/plugin/mynodeexecutorplugin/MyNodeexecutorPluginSpec.groovy").exists()
     }
 
