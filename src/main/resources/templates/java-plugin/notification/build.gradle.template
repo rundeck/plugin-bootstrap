@@ -31,13 +31,13 @@ configurations{
 
 dependencies {
     implementation 'org.rundeck:rundeck-core:${rundeckVersion}'
-    implementation 'org.codehaus.groovy:groovy-all:2.4.21'
+    implementation 'org.codehaus.groovy:groovy-all:${groovyVersion}'
 
     //use pluginLibs to add dependencies, example:
 
     testImplementation 'junit:junit:4.12'
-    testImplementation "org.codehaus.groovy:groovy-all:2.4.15"
-    testImplementation "org.spockframework:spock-core:1.0-groovy-2.4"
+    testImplementation "org.codehaus.groovy:groovy-all:${groovyVersion}"
+    testImplementation "org.spockframework:spock-core:2.2-groovy-3.0"
 }
 
 // task to copy plugin libs to output/lib dir
