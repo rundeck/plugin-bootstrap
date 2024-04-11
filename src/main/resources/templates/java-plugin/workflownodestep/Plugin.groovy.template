@@ -22,16 +22,6 @@ import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
 import org.rundeck.storage.api.StorageException
 import com.dtolabs.rundeck.core.execution.ExecutionListener
-
-
-/**
- * If other functions are required for purposes of modularity or clarity, they should either be added to a Util Class
- * (if generic enough), or a PluginHelper Class that is accessible to the Plugin Class.
- */
-import com.plugin.${javaPluginClass.toLowerCase()}.ExampleApis
-import com.plugin.${javaPluginClass.toLowerCase()}.Constants
-import com.plugin.${javaPluginClass.toLowerCase()}.Util
-
 import static com.dtolabs.rundeck.core.plugins.configuration.StringRenderingConstants.GROUPING
 import static com.dtolabs.rundeck.core.plugins.configuration.StringRenderingConstants.GROUP_NAME
 
@@ -53,13 +43,6 @@ class ${javaPluginClass} implements NodeStepPlugin {
     public static final String PLUGIN_NAME = "${sanitizedPluginName}"
     public static final String PLUGIN_TITLE = "${pluginName}"
     public static final String PLUGIN_DESCRIPTION = "Template Node Step plugin that makes a call to an API and retrieves a response."
-
-    /** Sets up the logging and meta objects for use during execution.
-    * log  - We'll add objects to it as the step executes, and then print them and clear the log
-    *        for its next use
-    * meta - Holds any metadata for use when the log is printed. Usually will just contain the
-    *        content type of the log data ("application/json")
-    */
 
     Map<String, String> meta = Collections.singletonMap("content-data-type", "application/json")
     ExampleApis exapis
@@ -90,7 +73,6 @@ Want to learn more about the Rundeck API? Check out [our docs](https://docs.rund
 
     /**
     * Here, we're requesting an integer, which will restrict this field in the GUI to only accept integers.
-    * However, the version will need to be a string. So, we'll cast it below.
     */
     @PluginProperty(
             title = "API Version",
@@ -146,12 +128,8 @@ By default, it will be collapsed in the list of properties, thanks to the '@Rend
     String hiddenTestValue
 
     /**
-     * In the main NodeStepPlugin class, executeNodeStep() should be the only method.
-     * Any other methods supporting the execution should be in another supporting class.
-     *
      * Plugins should make good use of logging and log levels in order to provide the user with the right amount
      * of information on execution. Use 'context.getExecutionContext().getExecutionListener().log' to handle logging.
-     *
      * Any failure in the execution should be caught and thrown as a NodeStepException
      * NodeStepExceptions require a message, FailureReason, and node name to be provided
      * @param context
@@ -195,7 +173,7 @@ By default, it will be collapsed in the list of properties, thanks to the '@Rend
         ExecutionListener logger = context.getExecutionContext().getExecutionListener()
 
         logger.log(3, "Here is a single line log entry. We'll print this as a logLevel 2, along with our next log lines.")
-        logger.log(3, "Plugins use a log level based on the standard syslog model. Here's how it works:")
+        logger.log(3, "Plugins use configurable logging levels that determines when a log is generated. Here's how it works:")
         //Note that log levels 3 and 4 are only visible in the GUI if the user has selected the 'Run with Debug Output' option.
         logger.log(3, '["0": "Error","1": "Warning","2": "Notice","3": "Info","4": "Debug"]')
 
@@ -222,7 +200,7 @@ By default, it will be collapsed in the list of properties, thanks to the '@Rend
         }
 
         /**
-        * At this point, if we haven't failed, we have our result data in hand with resourceInfo.
+        * At this point, we have our result data in hand with resourceInfo.
         * Let's save it to outputContext, which will allow the job runner to pass the results
         * to another job step automatically by the context name.
         * In this instance, the resource information in 'resourceInfo' can be interpolated into any subsequent job steps by
