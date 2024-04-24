@@ -1,0 +1,103 @@
+package com.plugin.${javaPluginClass.toLowerCase()};
+
+import com.dtolabs.rundeck.core.common.INodeEntry
+import com.dtolabs.rundeck.core.execution.ExecutionContext
+import com.dtolabs.rundeck.core.execution.ExecutionLogger
+import com.dtolabs.rundeck.core.execution.service.NodeExecutor
+import com.dtolabs.rundeck.core.execution.service.NodeExecutorResult
+import com.dtolabs.rundeck.core.execution.service.NodeExecutorResultImpl
+import com.dtolabs.rundeck.core.execution.utils.ResolverUtil
+import com.dtolabs.rundeck.core.plugins.Plugin
+import com.dtolabs.rundeck.core.plugins.configuration.Describable
+import com.dtolabs.rundeck.core.plugins.configuration.Description;
+import com.dtolabs.rundeck.core.plugins.configuration.StringRenderingConstants;
+import com.dtolabs.rundeck.plugins.ServiceNameConstants;
+import com.dtolabs.rundeck.plugins.descriptions.PluginDescription;
+import com.dtolabs.rundeck.plugins.util.DescriptionBuilder
+import com.dtolabs.rundeck.plugins.util.PropertyBuilder;
+
+@Plugin(name = "${sanitizedPluginName}", service = ServiceNameConstants.NodeExecutor)
+@PluginDescription(title = "${pluginName}", description = "A node executor plugin that can execute commands on remote nodes")
+public class ${javaPluginClass} implements NodeExecutor, Describable {
+
+    public static final String SERVICE_PROVIDER_NAME = "${sanitizedPluginName}"
+
+    public static final String PROJ_PROP_PREFIX = "project."
+    public static final String FRAMEWORK_PROP_PREFIX = "framework."
+
+    public static final String MOCK_FAILURE = "mockFailure"
+    public static final String USERNAME = "username"
+    public static final String PASSWORD = "password"
+
+    @Override
+    Description getDescription() {
+        DescriptionBuilder builder = DescriptionBuilder.builder()
+            .name(SERVICE_PROVIDER_NAME)
+            .title("${pluginName}")
+            .description("A node executor plugin that can execute commands on remote nodes")
+            .property(PropertyBuilder.builder()
+                    .title("Username")
+                    .string(USERNAME)
+                    .description("The username to use for the connection")
+                    .required(true)
+                    .renderingOption(StringRenderingConstants.INSTANCE_SCOPE_NODE_ATTRIBUTE_KEY, "username-key-path")
+                    .build()
+            )
+            .property(
+                    PropertyBuilder.builder()
+                    .title("Password")
+                    .string(PASSWORD)
+                    .description("The password to use for the connection")
+                    .required(true)
+                    .renderingOption(StringRenderingConstants.SELECTION_ACCESSOR_KEY, StringRenderingConstants.SelectionAccessor.STORAGE_PATH)
+                    .renderingOption(StringRenderingConstants.STORAGE_PATH_ROOT_KEY, "keys")
+                    .renderingOption(StringRenderingConstants.STORAGE_FILE_META_FILTER_KEY, "Rundeck-data-type=password")
+                    .build()
+            )
+            .property(
+                    PropertyBuilder.builder()
+                    .title("Mock Failure")
+                    .booleanType(MOCK_FAILURE)
+                    .description("Optionally select to mock a failure")
+                    .required(false)
+                    .defaultValue("false")
+                    .build()
+            )
+
+        builder.mapping(USERNAME, PROJ_PROP_PREFIX + USERNAME)
+        builder.frameworkMapping(USERNAME, FRAMEWORK_PROP_PREFIX + USERNAME)
+        builder.mapping(PASSWORD, PROJ_PROP_PREFIX + PASSWORD)
+        builder.frameworkMapping(PASSWORD, FRAMEWORK_PROP_PREFIX + PASSWORD)
+        builder.mapping(MOCK_FAILURE, PROJ_PROP_PREFIX + MOCK_FAILURE)
+        builder.frameworkMapping(MOCK_FAILURE, FRAMEWORK_PROP_PREFIX + MOCK_FAILURE)
+
+        return builder.build()
+    }
+
+    @Override
+    public NodeExecutorResult executeCommand(ExecutionContext context, String[] command, INodeEntry node) {
+
+        String username = ResolverUtil.resolveProperty(USERNAME, null, node,
+                context.getIFramework().getFrameworkProjectMgr().getFrameworkProject(context.getFrameworkProject()),
+                context.framework)
+        String passwordKeyPath = ResolverUtil.resolveProperty(PASSWORD, null, node,
+                context.getIFramework().getFrameworkProjectMgr().getFrameworkProject(context.getFrameworkProject()),
+                context.framework)
+        boolean mockFailure = Boolean.parseBoolean(ResolverUtil.resolveProperty(MOCK_FAILURE, "false", node,
+                context.getIFramework().getFrameworkProjectMgr().getFrameworkProject(context.getFrameworkProject()),
+                context.framework))
+
+        ExecutionLogger logger= context.getExecutionLogger()
+
+        //Here we can retrieve the password from key storage and use it to authenticate with the target node.
+        String password = Util.getPasswordFromPath(passwordKeyPath, context)
+
+        logger.log(2, "Executing command: " + Arrays.asList(command) + " on node: " + node.getNodename() + " with username: " + username)
+
+        if(mockFailure) {
+            return NodeExecutorResultImpl.createFailure(Util.PluginFailureReason.ConnectionError, "Failure due to mock failure", node)
+        } else {
+            return NodeExecutorResultImpl.createSuccess(node)
+        }
+    }
+}

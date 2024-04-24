@@ -30,7 +30,7 @@ class JavaPluginTemplateGeneratorTest extends Specification {
         new File(tmpDir,"/my-great-plugin/build.gradle").exists()
         new File(tmpDir,"/my-great-plugin/src/main/resources/resources/icon.png").exists()
         new File(tmpDir,"/my-great-plugin/README.md").exists()
-        new File(tmpDir,"/my-great-plugin/src/main/java/com/plugin/mygreatplugin/MyGreatPlugin.java").exists()
+        new File(tmpDir,"/my-great-plugin/src/main/groovy/com/plugin/mygreatplugin/MyGreatPlugin.groovy").exists()
         new File(tmpDir,"/my-great-plugin/src/test/groovy/com/plugin/mygreatplugin/MyGreatPluginSpec.groovy").exists()
 
     }
@@ -48,7 +48,7 @@ class JavaPluginTemplateGeneratorTest extends Specification {
         new File(tmpDir,"/my-resourcemodel-plugin/build.gradle").exists()
         new File(tmpDir,"/my-resourcemodel-plugin/src/main/resources/resources/icon.png").exists()
         new File(tmpDir,"/my-resourcemodel-plugin/README.md").exists()
-        new File(tmpDir,"/my-resourcemodel-plugin/src/main/java/com/plugin/myresourcemodelplugin/MyResourcemodelPluginFactory.java").exists()
+        new File(tmpDir,"/my-resourcemodel-plugin/src/main/groovy/com/plugin/myresourcemodelplugin/MyResourcemodelPluginFactory.groovy").exists()
         new File(tmpDir,"/my-resourcemodel-plugin/src/test/groovy/com/plugin/myresourcemodelplugin/MyResourcemodelPluginFactorySpec.groovy").exists()
 
     }
@@ -65,7 +65,7 @@ class JavaPluginTemplateGeneratorTest extends Specification {
         new File(tmpDir,"/my-workflowstep-plugin/build.gradle").exists()
         new File(tmpDir,"/my-workflowstep-plugin/src/main/resources/resources/icon.png").exists()
         new File(tmpDir,"/my-workflowstep-plugin/README.md").exists()
-        new File(tmpDir,"/my-workflowstep-plugin/src/main/java/com/plugin/myworkflowstepplugin/MyWorkflowstepPlugin.java").exists()
+        new File(tmpDir,"/my-workflowstep-plugin/src/main/groovy/com/plugin/myworkflowstepplugin/MyWorkflowstepPlugin.groovy").exists()
         new File(tmpDir,"/my-workflowstep-plugin/src/test/groovy/com/plugin/myworkflowstepplugin/MyWorkflowstepPluginSpec.groovy").exists()
     }
 
@@ -78,10 +78,11 @@ class JavaPluginTemplateGeneratorTest extends Specification {
 
         then:
         compileResult == 0
+        new File(tmpDir,"/my-workflownodestep-plugin/src/main/groovy/com/plugin/myworkflownodestepplugin/Constants.groovy").exists()
         new File(tmpDir,"/my-workflownodestep-plugin/build.gradle").exists()
         new File(tmpDir,"/my-workflownodestep-plugin/src/main/resources/resources/icon.png").exists()
         new File(tmpDir,"/my-workflownodestep-plugin/README.md").exists()
-        new File(tmpDir,"/my-workflownodestep-plugin/src/main/java/com/plugin/myworkflownodestepplugin/MyWorkflownodestepPlugin.java").exists()
+        new File(tmpDir,"/my-workflownodestep-plugin/src/main/groovy/com/plugin/myworkflownodestepplugin/MyWorkflownodestepPlugin.groovy").exists()
         new File(tmpDir,"/my-workflownodestep-plugin/src/test/groovy/com/plugin/myworkflownodestepplugin/MyWorkflownodestepPluginSpec.groovy").exists()
     }
 
@@ -113,7 +114,7 @@ class JavaPluginTemplateGeneratorTest extends Specification {
         new File(tmpDir,"/my-nodeexecutor-plugin/build.gradle").exists()
         new File(tmpDir,"/my-nodeexecutor-plugin/src/main/resources/resources/icon.png").exists()
         new File(tmpDir,"/my-nodeexecutor-plugin/README.md").exists()
-        new File(tmpDir,"/my-nodeexecutor-plugin/src/main/java/com/plugin/mynodeexecutorplugin/MyNodeexecutorPlugin.java").exists()
+        new File(tmpDir,"/my-nodeexecutor-plugin/src/main/groovy/com/plugin/mynodeexecutorplugin/MyNodeexecutorPlugin.groovy").exists()
         new File(tmpDir,"/my-nodeexecutor-plugin/src/test/groovy/com/plugin/mynodeexecutorplugin/MyNodeexecutorPluginSpec.groovy").exists()
     }
 

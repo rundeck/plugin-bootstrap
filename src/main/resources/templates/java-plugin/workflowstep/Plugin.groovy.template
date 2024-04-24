@@ -1,0 +1,215 @@
+package com.plugin.${javaPluginClass.toLowerCase()};
+
+/**
+ * Dependency Recommendations:
+ * Any Java SDK must be officially recognized by the vendor for that technology
+ * (e.g. AWS Java SDK, SumoLogic, Zendesk) and show reasonably recent development. Any SDK used must
+ * have an open source license such as Apache-2 or MIT.
+ */
+
+import com.dtolabs.rundeck.core.plugins.Plugin
+import com.dtolabs.rundeck.plugins.step.StepPlugin
+import com.dtolabs.rundeck.core.execution.workflow.steps.StepException
+import com.dtolabs.rundeck.core.plugins.configuration.StringRenderingConstants
+import com.dtolabs.rundeck.plugins.ServiceNameConstants
+import com.dtolabs.rundeck.plugins.step.PluginStepContext
+import com.dtolabs.rundeck.plugins.descriptions.PluginDescription
+import com.dtolabs.rundeck.plugins.descriptions.PluginProperty
+import com.dtolabs.rundeck.plugins.descriptions.RenderingOption
+import com.dtolabs.rundeck.plugins.descriptions.RenderingOptions
+import com.dtolabs.rundeck.core.execution.ExecutionListener
+import groovy.json.JsonBuilder
+import groovy.json.JsonOutput
+import org.rundeck.storage.api.StorageException
+import static com.dtolabs.rundeck.core.plugins.configuration.StringRenderingConstants.GROUPING
+import static com.dtolabs.rundeck.core.plugins.configuration.StringRenderingConstants.GROUP_NAME
+
+/**
+* WorkflowStepPlugin demonstrates a basic {@link com.dtolabs.rundeck.plugins.step.StepPlugin}, and how to
+* programmatically build all of the plugin's Properties exposed in the GUI.
+* <p/>
+* The plugin class is annotated with {@link Plugin} to define the service and name of this service provider plugin.
+* <p/>
+* The provider name of this plugin is statically defined in the class. The service name makes use of {@link
+* ServiceNameConstants} to provide the known Rundeck service names.
+*/
+@Plugin(name = PLUGIN_NAME, service = ServiceNameConstants.WorkflowStep)
+@PluginDescription(title = PLUGIN_TITLE, description = PLUGIN_DESCRIPTION)
+class ${javaPluginClass} implements StepPlugin {
+    /**
+     * Define a name used to identify your plugin. It is a good idea to use a fully qualified package-style name.
+     */
+    public static final String PLUGIN_NAME = "${sanitizedPluginName}"
+    public static final String PLUGIN_TITLE = "${pluginName}"
+    public static final String PLUGIN_DESCRIPTION = "Template Workflow Step plugin that makes a call to an API and retrieves a response."
+
+    Map<String, String> meta = Collections.singletonMap("content-data-type", "application/json")
+    ExampleApis exapis
+
+    /**
+     * Plugin Properties must:
+     *     * be laid out at the top of the Plugin class, just after any class/instance variables.
+     *     * be intuitive for the user to understand, and inform the end-user what is expected for that field.
+     *     * follow the method/conventions of renderingOptions below
+     *     * use KeyStorage for storage/retrieval of secrets. See 'API Key Path' property below.
+     */
+    @PluginProperty(
+        title = "API URL",
+        description = """Provide the base URL for the API to connect to. It will be used by the plugin to get information \
+from the API. If left blank, the call will use a default base API URL.\n\n
+When carriage returns are used in the description, any part of the string after them—such as this—will also be collapsed. \
+**Markdown** can also be used in this _expanded_ block.\n\n
+Want to learn more about the Rundeck API? Check out [our docs](https://docs.rundeck.com/docs/api/rundeck-api.html).""",
+        defaultValue = Constants.BASE_API_URL,
+        required = false
+    )
+    @RenderingOptions(
+        [
+            @RenderingOption(key = GROUP_NAME, value = "API Configuration")
+        ]
+    )
+    String userBaseApiUrl
+
+    /**
+    * Here, we're requesting an integer, which will restrict this field in the GUI to only accept integers.
+    */
+    @PluginProperty(
+            title = "API Version",
+            description = "Overrides the API version used to make the call. If left blank, the call will use a default API version.",
+            defaultValue = Constants.API_VERSION,
+            required = false
+    )
+    @RenderingOption(key = GROUP_NAME, value = "API Configuration")
+    Integer userApiVersion
+
+    /**
+    * Here we're requesting the user provides the path to the API key in Key Storage.
+    * For security and accessibility, any secure strings of information should always be saved into Key Storage. That includes
+    * tokens, passwords, certificates, or any other authentication information.
+    * Here, we're setting up the RenderingOptions to display this as a field for keys of the 'password' type (Rundeck-data-type=password).
+    * The value of this property will only be a path to the necessary key. You'll see how the actual key is resolved below.
+    */
+    @PluginProperty(
+        title = "API Key Path",
+        description = "REQUIRED: The path to the Key Storage entry for your API Key.",
+        required = true
+    )
+    @RenderingOptions([
+        @RenderingOption(
+            key = StringRenderingConstants.SELECTION_ACCESSOR_KEY,
+            value = "STORAGE_PATH"
+        ),
+        @RenderingOption(
+            key = StringRenderingConstants.STORAGE_PATH_ROOT_KEY,
+            value = "keys"
+        ),
+        @RenderingOption(
+            key = StringRenderingConstants.STORAGE_FILE_META_FILTER_KEY,
+            value = "Rundeck-data-type=password"
+        ),
+        @RenderingOption(
+            key = StringRenderingConstants.GROUP_NAME,
+            value = "API Configuration"
+        )
+    ])
+    String apiKeyPath
+
+    @PluginProperty(
+        title = "Collapsed test value",
+        description = """This is another test property to be output at the end of the execution.\
+By default, it will be collapsed in the list of properties, thanks to the '@RenderingOption' \
+'GROUPING' key being set to 'secondary'.""",
+        required = false
+    )
+    @RenderingOption(key = GROUP_NAME, value = "Collapsed Configuration")
+    /** The secondary grouping RenderingOption is what collapses the field by default in the GUI */
+    @RenderingOption(key = GROUPING, value = "secondary")
+    String hiddenTestValue
+
+    /**
+     * Plugins should make good use of logging and log levels in order to provide the user with the right amount
+     * of information on execution. Use 'context.getExecutionContext().getExecutionListener().log' to handle logging.
+     * Any failure in the execution should be caught and thrown as a StepException
+     * StepExceptions require a message, FailureReason to be provided
+     * @param context
+     * @param configuration
+     * @param entry
+     * @throws StepException
+     */
+    @Override
+    void executeStep(final PluginStepContext context,
+                                final Map<String, Object> configuration) {
+
+        /**
+        * We'll resolve the name of the current project. We'll use them to make an
+        * API GET request.
+        */
+        String projectName = context.getFrameworkProject()
+        String projectInfo
+        String userApiVersionString = null
+        String userApiKey
+
+        /**
+        * Next, we'll resolve the API token itself. There's a perfect function for this in the Util class,
+        * getPasswordFromKeyStorage. YOu can see more about how the process works in the Util file.
+        */
+        try {
+            userApiKey = Util.getPasswordFromKeyStorage(apiKeyPath, context)
+        } catch (StorageException e) {
+            throw new StepException(
+                'Error accessing ${apiKeyPath}:' + e.getMessage(),
+                PluginFailureReason.KeyStorageError
+            )
+        }
+
+        /**
+        * The preferred method of logging is to write into, and then print out,
+        * the executionContext log. First, we add to our logging object from before.
+        */
+        ExecutionListener logger = context.getExecutionContext().getExecutionListener()
+
+        logger.log(3, "Here is a single line log entry. We'll print this as a logLevel 3, along with our next log lines.")
+        logger.log(3, "Plugins use configurable logging levels that determines when log is generated. Here's how it works:")
+        //Note that log levels 3 and 4 are only visible in the GUI if the user has selected the 'Run with Debug Output' option.
+        logger.log(3, '["0": "Error","1": "Warning","2": "Notice","3": "Info","4": "Debug"]')
+
+        /** Cast the API Version, if it was provided */
+        if (userApiVersion) {
+            userApiVersionString = userApiVersion.toString()
+        }
+
+        /**
+         * Secrets should be retrieved from Key Storage using a try/catch block that fetches credentials/passwords using
+         * the user provided path, and the PluginStepContext object.
+         */
+        try {
+            if (!exapis) {
+                exapis = new ExampleApis(userBaseApiUrl, userApiVersionString, userApiKey)
+            }
+            projectInfo = exapis.getProjectInfoByName(projectName)
+        } catch (IOException e) {
+            throw new StepException(
+                'Failed to get resource info with error:' + e.getMessage(),
+                PluginFailureReason.ResourceInfoError
+            )
+        }
+
+        /**
+        * At this point, we have our result data in hand with resourceInfo.
+        * Let's save it to outputContext, which will allow the job runner to pass the results
+        * to another job step automatically by the context name.
+        * In this instance, the resource information in 'projectInfo' can be interpolated into any subsequent job steps by
+        * using '${data}.${projectInfo}'.
+        */
+        context.getExecutionContext().getOutputContext().addOutput("data", "projectInfo", projectInfo)
+        /** Here, we'll get access to 'hiddenTestValue' via '${extra}.${hiddenTestValue}' */
+        context.getExecutionContext().getOutputContext().addOutput("extra", "hiddenTestValue", hiddenTestValue)
+
+        /** Now, we'll add it to the log, print for the user, and call it a day. */
+        logger.log(2, "Job run complete! Results from API call:")
+
+        def json = JsonOutput.toJson(projectInfo)
+        logger.log(2, json, meta)
+
+    }
+}

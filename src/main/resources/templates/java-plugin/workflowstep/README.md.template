@@ -1,4 +1,3 @@
-# ${pluginName} Rundeck Plugin
+# ${pluginName} Node Step Plugin
 
-This is a notification plugin.
-
+This is a template node step plugin that was build using the [rundeck-plugin-bootstrap](https://github.com/rundeck/plugin-bootstrap)

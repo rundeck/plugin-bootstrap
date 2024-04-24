@@ -8,10 +8,10 @@ defaultTasks 'clean','build'
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'idea'
-sourceCompatibility = 1.8
+sourceCompatibility = 11.0
 ext.rundeckPluginVersion= '2.0'
 ext.rundeckVersion= '${rundeckVersion}'
-ext.pluginClassNames='com.plugin.${sanitizedPluginName}.${javaPluginClass}'
+ext.pluginClassNames='com.plugin.${javaPluginClass.toLowerCase()}.${javaPluginClass}'
 
 
 repositories {
@@ -30,14 +30,15 @@ configurations{
 }
 
 dependencies {
-    implementation 'org.rundeck:rundeck-core:4.14.2-20230713'
+    implementation 'org.rundeck:rundeck-core:${rundeckVersion}'
+    implementation 'org.codehaus.groovy:groovy-all:${groovyVersion}'
 
-    //use pluginLibs to add dependecies, example:
+    //use pluginLibs to add dependencies, example:
     //pluginLibs group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
 
     testImplementation 'junit:junit:4.12'
-    testImplementation "org.codehaus.groovy:groovy-all:2.4.15"
-    testImplementation "org.spockframework:spock-core:1.0-groovy-2.4"
+    testImplementation "org.codehaus.groovy:groovy-all:${groovyVersion}"
+    testImplementation "org.spockframework:spock-core:2.2-groovy-3.0"
 }
 
 // task to copy plugin libs to output/lib dir
@@ -56,7 +57,7 @@ jar {
         attributes 'Rundeck-Plugin-Name': '${pluginName}'
         attributes 'Rundeck-Plugin-Description': 'Provide a short description of your plugin here.'
         attributes 'Rundeck-Plugin-Rundeck-Compatibility-Version': '3.x'
-        attributes 'Rundeck-Plugin-Tags': 'java,WorkflowStep'
+        attributes 'Rundeck-Plugin-Tags': 'java,NodeStep'
         attributes 'Rundeck-Plugin-License': 'Apache 2.0'
         attributes 'Rundeck-Plugin-Source-Link': 'Please put the link to your source repo here'
         attributes 'Rundeck-Plugin-Target-Host-Compatibility': 'all'

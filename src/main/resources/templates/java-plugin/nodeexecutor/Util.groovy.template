@@ -1,0 +1,22 @@
+package com.plugin.${javaPluginClass.toLowerCase()}
+
+import com.dtolabs.rundeck.core.execution.ExecutionContext
+import com.dtolabs.rundeck.core.execution.workflow.steps.FailureReason
+import com.dtolabs.rundeck.core.storage.ResourceMeta
+
+class Util {
+
+    static String getPasswordFromPath(String path, ExecutionContext context) throws IOException {
+        ResourceMeta contents = context.getStorageTree().getResource(path).getContents();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        contents.writeContent(byteArrayOutputStream);
+        String password = new String(byteArrayOutputStream.toByteArray());
+        return password;
+    }
+
+    enum PluginFailureReason implements FailureReason {
+        KeyStorageError,
+        ConnectionError
+    }
+
+}

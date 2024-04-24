@@ -1,6 +1,6 @@
 build.gradle.template->build.gradle
 README.md.template->README.md
 icon.png->src/main/resources/resources/icon.png
-Plugin.java.template->src/main/java/com/plugin/${javaPluginClass.toLowerCase()}/${javaPluginClass}.java
+Plugin.groovy.template->src/main/groovy/com/plugin/${javaPluginClass.toLowerCase()}/${javaPluginClass}.groovy
+Util.groovy.template->src/main/groovy/com/plugin/${javaPluginClass.toLowerCase()}/Util.groovy
 PluginSpec.groovy.template->src/test/groovy/com/plugin/${javaPluginClass.toLowerCase()}/${javaPluginClass}Spec.groovy
-
